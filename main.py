@@ -101,7 +101,7 @@ def create_post():
         post_image = request.files['post_image']
         if post_image:
             image_url = db.upload_to_s3(post_image)
-            create_post = db.create_post(username=session['username'], text=post_text, image_url=image_url, head_title=head_title, post_owner_id=user_info[0]) == True
+            create_post = db.create_post(username=session['username'], text=post_text, image_url=image_url, head_title=head_title, owner_post_id=user_info[0]) == True
             if create_post:
                 flash("пост успешно опубликован")
             else:
