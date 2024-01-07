@@ -80,6 +80,24 @@ class SQLighter:
         if last_seen:
             return (datetime.datetime.now() - last_seen) < datetime.timedelta(minutes=5)
         return False
+    
+    def update_avatar(self, file, user_id):
+        filename = f'avatar_{user_id}_{file.filename}'
+        self.upload_to_s3v2(file, filename=filename)
+        self.cursor.execute('UPDATE users SET img_avatar = %s WHERE id = %s', (filename, user_id))
+        self.connection.commit()
+
+    def get_avatar(self, user_id):
+        with self.connection.cursor(cursor_factory=DictCursor) as cursor:
+            cursor.execute('SELECT img_avatar FROM users WHERE id = %s', (user_id,))
+            result = cursor.fetchone()
+            if result and result['img_avatar']:
+                print(f"!!! {result['img_avatar']}")
+                avatar_name = result['img_avatar']
+                return self.find_photo(avatar_name)
+            else:
+                return None  # Или URL изображения по умолчанию, если аватар отсутствует
+
         
     def upload_to_s3(self, file):
         try:
@@ -99,15 +117,31 @@ class SQLighter:
             print(f"Ошибка при загрузке файла: {error}")
             return
         
-    def create_post(self, text, image_url, head_title, username, owner_post_id):
+    def upload_to_s3v2(self, file, filename):
+        try:
+            print(f"v2 Начинается загрузка файла: {filename}")
+
+            # Загружаем файл на S3
+            s3.upload_fileobj(
+                file,   
+                "1f38301d-d3dcd88d-0a80-4ad8-981a-5aa4655a891b",
+                filename
+            )
+            print(f"Файл успешно загружен: {filename}")
+            return filename
+        except Exception as error:
+            print(f"Ошибка при загрузке файла: {error}")
+            return
+        
+    def create_post(self, text, image_url, head_title, username, post_owner_id):
         query = '''
-        INSERT INTO posts (text, user_id, image_url, created_at, head_title, username, owner_post_id) 
+        INSERT INTO posts (text, user_id, image_url, created_at, head_title, username, post_owner_id) 
         VALUES (%s, %s, %s, CURRENT_TIMESTAMP, %s, %s, %s)
 
         '''
         try:
             print("ПОСТ УСПЕШНО СОЗДАН")
-            self.cursor.execute(query, (text, 3, image_url, head_title, username, owner_post_id))
+            self.cursor.execute(query, (text, 3, image_url, head_title, username, post_owner_id))
             self.connection.commit()
             return True
         except Exception as e:

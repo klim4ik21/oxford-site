@@ -86,10 +86,20 @@ def profile():
         user_info = db.get_user(username)
         last_seen = db.get_last_seen(username)
         online_status = db.is_online(last_seen)
-        return render_template('profile.html', user=user_info, is_online=online_status)
+        avatar = db.get_avatar(user_info[0])
+        print(avatar)
+        return render_template('profile.html', user=user_info, is_online=online_status, avatar=avatar)
     else:
         return redirect(url_for('login'))
     
+@app.route('/img_update_avatar', methods=['POST'])
+def img_avatar_update():
+    if 'username' in session:
+        db = SQLighter(db_uri)
+        user_info = db.get_user(session['username'])
+        avatar = request.files['img_avatar']
+        db.update_avatar(avatar, user_info[0])
+        return redirect(url_for('home'))
 
 @app.route('/create_post', methods=['POST'])
 def create_post():
@@ -101,7 +111,7 @@ def create_post():
         post_image = request.files['post_image']
         if post_image:
             image_url = db.upload_to_s3(post_image)
-            create_post = db.create_post(username=session['username'], text=post_text, image_url=image_url, head_title=head_title, owner_post_id=user_info[0]) == True
+            create_post = db.create_post(username=session['username'], text=post_text, image_url=image_url, head_title=head_title, post_owner_id=user_info[0]) == True
             if create_post:
                 flash("пост успешно опубликован")
             else:
@@ -115,12 +125,13 @@ def create_post():
 def view_profile(user_id):
     db = SQLighter(db_uri)
     user_info = db.get_user_by_id(user_id)
+    avatar = db.get_avatar(user_id)
     if user_info:
         print(user_info[1])
         last_seen = db.get_last_seen(user_info[1])
         online_status = db.is_online(last_seen)
         print(online_status)
-        return render_template('user_profile.html', user=user_info, is_online=online_status)
+        return render_template('user_profile.html', user=user_info, is_online=online_status, avatar=avatar)
     else:
         flash('Пользователь не найден')
         return redirect(url_for('home'))
