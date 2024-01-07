@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="main-container">
+    <h1 class="news-feed-title">News Feed</h1>
+
+    <!-- Форма для создания поста -->
+    <div class="post-form">
+        <form method="post" action="{{ url_for('create_post') }}" enctype="multipart/form-data">
+            <textarea name="post_text" placeholder="What's on your mind?" class="post-textarea"></textarea>
+            <input type="file" name="post_image" class="post-image-input">
+            <button type="submit" class="post-submit-btn">Post</button>
+        </form>
+    </div>
+
+    <!-- Фид новостей -->
+    {% for post in posts %}
+    <div class="news-item">
+        <h3 class="post-username">{{ post[4] }}</h3> <!-- Имя пользователя -->
+        {% if post[2] %}
+            <img src="{{ url_for('static', filename='images/' ~ post[2]) }}" alt="Post image" class="post-image", style="max-width: 20%; height: auto; margin-top: 10px;"> <!-- URL изображения -->
+        {% endif %}
+        <p class="post-text">{{ post[1] }}</p> <!-- Текст поста -->
+        <span class="post-date">{{ post[3] }}</span> <!-- Дата создания -->
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
