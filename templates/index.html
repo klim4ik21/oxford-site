@@ -26,7 +26,9 @@
     {% for post in posts %}
     <div class="news-item">
         <h3 class="post-head_title">Ttitle {{ post['head_title'] }}</h3>
-        <h3 class="post-username">user {{ post['username'] }}</h3> <!-- Имя пользователя -->
+        <h3 class="post-username">
+            <a href="{{ url_for('view_profile', user_id=post['post_owner_id']) }}">{{ post['username'] }}</a>
+        </h3>
         {% if post['full_image_url'] %}
             <img src="{{ post['full_image_url'] }}" alt="Post image", style="max-width: 20%; max-height: 20%;">
         {% endif %}

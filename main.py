@@ -23,6 +23,8 @@ def get_full_image_url(image_path):
 @app.route('/')
 def home():
     db = SQLighter(db_uri)
+    if 'username' in session:
+        db.update_last_seen(session['username'])
     posts = db.get_posts()
     posts_list = []
     for post in posts:
@@ -32,7 +34,8 @@ def home():
             'image_name': post[2],
             'created_at': post[3],
             'head_title': post[5],
-            'username': post[6]
+            'username': post[6],
+            'post_owner_id': post[7]
         }
         post_photo_name = post_dict['image_name']
         post_dict['full_image_url'] = get_full_image_url(post_photo_name)
@@ -79,8 +82,11 @@ def login():
 def profile():
     db = SQLighter(db_uri)
     if 'username' in session:
-        user_info = db.get_user(session['username'])
-        return render_template('profile.html', user=user_info)
+        username = session['username']
+        user_info = db.get_user(username)
+        last_seen = db.get_last_seen(username)
+        online_status = db.is_online(last_seen)
+        return render_template('profile.html', user=user_info, is_online=online_status)
     else:
         return redirect(url_for('login'))
     
@@ -95,7 +101,7 @@ def create_post():
         post_image = request.files['post_image']
         if post_image:
             image_url = db.upload_to_s3(post_image)
-            create_post = db.create_post(username=session['username'], text=post_text, image_url=image_url, head_title=head_title) == True
+            create_post = db.create_post(username=session['username'], text=post_text, image_url=image_url, head_title=head_title, post_owner_id=user_info[0]) == True
             if create_post:
                 flash("пост успешно опубликован")
             else:
@@ -104,6 +110,21 @@ def create_post():
         return redirect(url_for('home'))
     else:
         flash('Произошла ошибка: вы не авторизованы', 'auth error')
+
+@app.route('/users/<int:user_id>')
+def view_profile(user_id):
+    db = SQLighter(db_uri)
+    user_info = db.get_user_by_id(user_id)
+    if user_info:
+        print(user_info[1])
+        last_seen = db.get_last_seen(user_info[1])
+        online_status = db.is_online(last_seen)
+        print(online_status)
+        return render_template('user_profile.html', user=user_info, is_online=online_status)
+    else:
+        flash('Пользователь не найден')
+        return redirect(url_for('home'))
+
 
 @app.route('/logout')
 def logout():

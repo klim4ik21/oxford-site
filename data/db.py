@@ -34,7 +34,7 @@ class SQLighter:
     
     def get_posts(self):
         self.cursor.execute('''
-            SELECT posts.id, posts.text, posts.image_url, posts.created_at, users.username, posts.head_title, posts.username
+            SELECT posts.id, posts.text, posts.image_url, posts.created_at, users.username, posts.head_title, posts.username, posts.post_owner_id
             FROM posts
             JOIN users ON posts.user_id = users.id
             ORDER BY posts.created_at DESC
@@ -58,6 +58,29 @@ class SQLighter:
         else:
             return "Cant Load photo"
         
+    def update_last_seen(self, username):
+        current_time = datetime.datetime.now()
+        self.cursor.execute('UPDATE users SET last_seen = %s WHERE username = %s', (current_time, username))
+        self.connection.commit()
+
+    def get_last_seen(self, username):
+        with self.connection.cursor(cursor_factory=DictCursor) as cursor:
+            cursor.execute('SELECT last_seen FROM users WHERE username = %s', (username,))
+            result = cursor.fetchone()
+            return result['last_seen']
+
+
+    def get_user_by_id(self, user_id):
+        with self.connection.cursor(cursor_factory=DictCursor) as cursor:
+            cursor.execute('SELECT * FROM users WHERE id = %s', (user_id,))
+            return cursor.fetchone()
+
+
+    def is_online(self, last_seen):
+        if last_seen:
+            return (datetime.datetime.now() - last_seen) < datetime.timedelta(minutes=5)
+        return False
+        
     def upload_to_s3(self, file):
         try:
             # Получаем имя файла из объекта file
@@ -75,18 +98,16 @@ class SQLighter:
         except Exception as error:
             print(f"Ошибка при загрузке файла: {error}")
             return
-
-
         
-    def create_post(self, text, image_url, head_title, username):
+    def create_post(self, text, image_url, head_title, username, owner_post_id):
         query = '''
-        INSERT INTO posts (text, user_id, image_url, created_at, head_title, username) 
-        VALUES (%s, %s, %s, CURRENT_TIMESTAMP, %s, %s)
+        INSERT INTO posts (text, user_id, image_url, created_at, head_title, username, owner_post_id) 
+        VALUES (%s, %s, %s, CURRENT_TIMESTAMP, %s, %s, %s)
 
         '''
         try:
             print("ПОСТ УСПЕШНО СОЗДАН")
-            self.cursor.execute(query, (text, 3, image_url, head_title, username))
+            self.cursor.execute(query, (text, 3, image_url, head_title, username, owner_post_id))
             self.connection.commit()
             return True
         except Exception as e:
