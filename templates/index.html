@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+      <p>{{ message }}</p> <!-- Или любой другой HTML для стилизации сообщений -->
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
 {% block content %}
 <div class="main-container">
     <h1 class="news-feed-title">News Feed</h1>
@@ -7,6 +15,7 @@
     <!-- Форма для создания поста -->
     <div class="post-form">
         <form method="post" action="{{ url_for('create_post') }}" enctype="multipart/form-data">
+            <textarea name="head_title" placeholder="name of your post" class="head_title-textarea"></textarea>
             <textarea name="post_text" placeholder="What's on your mind?" class="post-textarea"></textarea>
             <input type="file" name="post_image" class="post-image-input">
             <button type="submit" class="post-submit-btn">Post</button>

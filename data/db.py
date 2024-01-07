@@ -21,8 +21,7 @@ class SQLighter:
     def __init__(self, db_uri):
         self.connection = psycopg2.connect(db_uri)
         self.cursor = self.connection.cursor()
-
-    
+        
     def create_user(self, username, password_hash, email):
         # Добавление нового пользователя в базу данных
         self.cursor.execute('INSERT INTO users (username, password_hash, email) VALUES (%s, %s, %s)', (username, password_hash, email))
@@ -35,7 +34,7 @@ class SQLighter:
     
     def get_posts(self):
         self.cursor.execute('''
-            SELECT posts.id, posts.text, posts.image_url, posts.created_at, users.username
+            SELECT posts.id, posts.text, posts.image_url, posts.created_at, users.username, posts.head_title
             FROM posts
             JOIN users ON posts.user_id = users.id
             ORDER BY posts.created_at DESC
@@ -59,12 +58,38 @@ class SQLighter:
         else:
             return "Cant Load photo"
         
-    def upload_to_s3(self, file, filename):
-        filename = secure_filename(filename)
-        self.s3_client.upload_fileobj(
-            file,
-            self.bucket_name,
-            'path/to/save/' + filename
-        )
-        image_url = f'https://{self.bucket_name}.s3.amazonaws.com/path/to/save/{filename}'
-        return image_url
+    def upload_to_s3(self, file):
+        try:
+            # Получаем имя файла из объекта file
+            filename = secure_filename(file.filename)
+            print(f"Начинается загрузка файла: {filename}")
+
+            # Загружаем файл на S3
+            s3.upload_fileobj(
+                file,   
+                "1f38301d-d3dcd88d-0a80-4ad8-981a-5aa4655a891b",
+                filename
+            )
+            print(f"Файл успешно загружен: {filename}")
+            return filename
+        except Exception as error:
+            print(f"Ошибка при загрузке файла: {error}")
+            return
+
+
+        
+    def create_post(self, text, image_url, head_title, username):
+        query = '''
+        INSERT INTO posts (text, user_id, image_url, created_at, head_title, username) 
+        VALUES (%s, %s, %s, CURRENT_TIMESTAMP, %s, %s)
+
+        '''
+        try:
+            print("ПОСТ УСПЕШНО СОЗДАН")
+            self.cursor.execute(query, (text, 3, image_url, head_title, username))
+            self.connection.commit()
+            return True
+        except Exception as e:
+            print(f"Ошибка при создании поста: {e}")
+            self.connection.rollback()
+            return False

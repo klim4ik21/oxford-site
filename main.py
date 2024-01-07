@@ -3,7 +3,6 @@ from flask_session import Session
 from data.db import SQLighter
 from werkzeug.security import generate_password_hash, check_password_hash
 from config import db_uri
-from werkzeug.utils import secure_filename
 
 
 app = Flask(__name__)
@@ -32,7 +31,8 @@ def home():
             'text': post[1],
             'image_name': post[2],
             'created_at': post[3],
-            'username': post[4]
+            'username': post[4],
+            'head_title': post[5]
         }
         post_photo_name = post_dict['image_name']
         post_dict['full_image_url'] = get_full_image_url(post_photo_name)
@@ -84,16 +84,26 @@ def profile():
     else:
         return redirect(url_for('login'))
     
+
 @app.route('/create_post', methods=['POST'])
 def create_post():
-    post_text = request.form['post_text']
-    post_image = request.files['post_image']
-    
-    # Здесь должен быть код для обработки и сохранения поста и изображения
-    # ...
+    if 'username' in session:
+        db = SQLighter(db_uri)
+        user_info = db.get_user(session['username'])
+        head_title = request.form['head_title']
+        post_text = request.form['post_text']
+        post_image = request.files['post_image']
+        if post_image:
+            image_url = db.upload_to_s3(post_image)
+            create_post = db.create_post(username=session['username'], text=post_text, image_url=image_url, head_title=head_title) == True
+            if create_post:
+                flash("пост успешно опубликован")
+            else:
+                flash(create_post)
 
-    return redirect(url_for('home'))
-
+        return redirect(url_for('home'))
+    else:
+        flash('Произошла ошибка: вы не авторизованы', 'auth error')
 
 @app.route('/logout')
 def logout():
