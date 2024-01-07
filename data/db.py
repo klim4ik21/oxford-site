@@ -4,6 +4,7 @@ from psycopg2.extras import DictCursor
 import boto3
 from botocore.client import Config
 from botocore.exceptions import NoCredentialsError
+from werkzeug.utils import secure_filename
 
 s3 = boto3.client(
     's3',
@@ -57,3 +58,13 @@ class SQLighter:
             return response_photo
         else:
             return "Cant Load photo"
+        
+    def upload_to_s3(self, file, filename):
+        filename = secure_filename(filename)
+        self.s3_client.upload_fileobj(
+            file,
+            self.bucket_name,
+            'path/to/save/' + filename
+        )
+        image_url = f'https://{self.bucket_name}.s3.amazonaws.com/path/to/save/{filename}'
+        return image_url

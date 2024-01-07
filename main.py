@@ -3,6 +3,7 @@ from flask_session import Session
 from data.db import SQLighter
 from werkzeug.security import generate_password_hash, check_password_hash
 from config import db_uri
+from werkzeug.utils import secure_filename
 
 
 app = Flask(__name__)
