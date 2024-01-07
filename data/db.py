@@ -1,7 +1,17 @@
 import psycopg2
 import datetime
 from psycopg2.extras import DictCursor
+import boto3
+from botocore.client import Config
 
+s3 = boto3.client(
+    's3',
+    endpoint_url='https://s3.timeweb.com',
+    region_name='ru-1',
+    aws_access_key_id='cb42813',
+    aws_secret_access_key='488554bbf25da342105ef70286f08971',
+    config=Config(signature_version='s3v4')
+)
 
 db_uri = "postgresql://gen_user:q%2Fgy%3FQy%3F0%3Dfi%5C%3F@109.172.88.61:5432/default_db"
 
@@ -29,3 +39,12 @@ class SQLighter:
             ORDER BY posts.created_at DESC
         ''')
         return self.cursor.fetchall()
+    
+    def find_photo(bucket_name, photo_name):
+        response = s3.list_objects_v2(Bucket=bucket_name, Prefix=photo_name)
+
+        if 'Contents' in response:
+            photos = [item['Key'] for item in response['Contents']]
+            return photos
+        else:
+            return []

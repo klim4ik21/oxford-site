@@ -4,18 +4,26 @@ from data.db import SQLighter
 from werkzeug.security import generate_password_hash, check_password_hash
 from config import db_uri
 
+
 app = Flask(__name__)
-app.secret_key = '1'
+app.secret_key = '111'
 
 # Настройка Flask-Session
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+def get_full_image_url(image_path):
+    if image_path:
+        return f"https://s3.timeweb.com/{image_path}"
+    return None
+
 @app.route('/')
 def home():
     db = SQLighter(db_uri)
     posts = db.get_posts()
+    for post in posts:
+        post['full_image_url'] = get_full_image_url(post['image_url'])
     return render_template('index.html', posts=posts)
     # if 'username' in session:
     #     return render_template('index.html', username=session['username'], posts=posts)
