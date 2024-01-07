@@ -1,1 +1,28 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>MySpace Clone</title>
+    <div style="justify-content: space-between; padding: 10px; background-color: #f4f4f4;">
+        <div>
+            <a href="{{ url_for('home') }}">Home</a>
+        </div>
+</head>
+<body>
+    <div style="text-align: right;">
+        {% if session['username'] %}
+            <a href="{{ url_for('profile') }}">Profile</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+        {% endif %}
+    </div>
 
+    <div style="text-align: center;">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
