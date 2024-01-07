@@ -1,0 +1,59 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #111;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.sidebar .nav-links {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar .nav-links li a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.main-content {
+    flex-grow: 1;
+    background-color: white;
+    padding: 20px;
+}
+
+.news-feed {
+    background-color: #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+
+/* Дополнительные стили для старого вида */
+h1 {
+    font-size: 2em;
+    color: #333;
+}
+
+a {
+    color: #0066cc;
+}
+
+a:hover {
+    text-decoration: underline;
+}
