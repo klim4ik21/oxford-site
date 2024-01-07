@@ -25,12 +25,13 @@
     <!-- Фид новостей -->
     {% for post in posts %}
     <div class="news-item">
-        <h3 class="post-username">{{ post['username'] }}</h3> <!-- Имя пользователя -->
+        <h3 class="post-head_title">Ttitle {{ post['head_title'] }}</h3>
+        <h3 class="post-username">user {{ post['username'] }}</h3> <!-- Имя пользователя -->
         {% if post['full_image_url'] %}
             <img src="{{ post['full_image_url'] }}" alt="Post image", style="max-width: 20%; max-height: 20%;">
         {% endif %}
         <p class="post-text">{{ post['text'] }}</p> <!-- Текст поста -->
-        <span class="post-date">{{ post['created_at'] }}</span> <!-- Дата создания -->
+        <span class="post-date">{{ post['created_at'] }} date</span> <!-- Дата создания -->
     </div>
 {% endfor %}
 </div>

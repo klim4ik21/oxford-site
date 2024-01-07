@@ -31,8 +31,8 @@ def home():
             'text': post[1],
             'image_name': post[2],
             'created_at': post[3],
-            'username': post[4],
-            'head_title': post[5]
+            'head_title': post[5],
+            'username': post[6]
         }
         post_photo_name = post_dict['image_name']
         post_dict['full_image_url'] = get_full_image_url(post_photo_name)

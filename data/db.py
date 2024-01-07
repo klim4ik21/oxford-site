@@ -34,7 +34,7 @@ class SQLighter:
     
     def get_posts(self):
         self.cursor.execute('''
-            SELECT posts.id, posts.text, posts.image_url, posts.created_at, users.username, posts.head_title
+            SELECT posts.id, posts.text, posts.image_url, posts.created_at, users.username, posts.head_title, posts.username
             FROM posts
             JOIN users ON posts.user_id = users.id
             ORDER BY posts.created_at DESC
