@@ -1,0 +1,4 @@
+Flask-Session
+boto3
+psycopg2
+flask
