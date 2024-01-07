@@ -3,6 +3,7 @@ import datetime
 from psycopg2.extras import DictCursor
 import boto3
 from botocore.client import Config
+from botocore.exceptions import NoCredentialsError
 
 s3 = boto3.client(
     's3',
@@ -40,11 +41,19 @@ class SQLighter:
         ''')
         return self.cursor.fetchall()
     
-    def find_photo(bucket_name, photo_name):
-        response = s3.list_objects_v2(Bucket=bucket_name, Prefix=photo_name)
+    def find_photo(self, photo_name):
+        response = s3.list_objects_v2(Bucket="1f38301d-d3dcd88d-0a80-4ad8-981a-5aa4655a891b", Prefix=photo_name)
 
         if 'Contents' in response:
             photos = [item['Key'] for item in response['Contents']]
-            return photos
+            try:
+                response_photo = s3.generate_presigned_url('get_object',
+                                                            Params={'Bucket': "1f38301d-d3dcd88d-0a80-4ad8-981a-5aa4655a891b",
+                                                                    'Key': photos[0]},
+                                                            ExpiresIn=3600)
+            except NoCredentialsError:
+                print("Ошибка учетных данных")
+                return None
+            return response_photo
         else:
-            return []
+            return "Cant Load photo"

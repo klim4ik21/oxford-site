@@ -15,16 +15,29 @@ Session(app)
 
 def get_full_image_url(image_path):
     if image_path:
-        return f"https://s3.timeweb.com/{image_path}"
+        db = SQLighter(db_uri)
+        print(db.find_photo(photo_name=image_path))
+        return db.find_photo(photo_name=image_path)
     return None
 
 @app.route('/')
 def home():
     db = SQLighter(db_uri)
     posts = db.get_posts()
+    posts_list = []
     for post in posts:
-        post['full_image_url'] = get_full_image_url(post['image_url'])
-    return render_template('index.html', posts=posts)
+        post_dict = {
+            'id': post[0],
+            'text': post[1],
+            'image_name': post[2],
+            'created_at': post[3],
+            'username': post[4]
+        }
+        post_photo_name = post_dict['image_name']
+        post_dict['full_image_url'] = get_full_image_url(post_photo_name)
+        posts_list.append(post_dict)
+
+    return render_template('index.html', posts=posts_list)
     # if 'username' in session:
     #     return render_template('index.html', username=session['username'], posts=posts)
     # else:
