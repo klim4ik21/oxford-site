@@ -13,6 +13,7 @@ def get_user(user_id):
     user_info = db.get_user_by_id(user_id=user_id)
 
     if user_info:
+        avatar = db.get_avatar(user_info[0])
         # Convert user_info to a dictionary and exclude the password hash
         user_dict = {
             'id': user_info[0],
@@ -20,6 +21,7 @@ def get_user(user_id):
             'email': user_info[3],
             'created_at': user_info[4],
             'last_seen': user_info[5],
+            'img_avatar': avatar,
             # include other fields as needed, but exclude the password hash
         }
         return jsonify({'user': user_dict})
