@@ -1,17 +1,8 @@
 {% extends 'base.html' %}
 
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    {% for message in messages %}
-      <p>{{ message }}</p> <!-- Или любой другой HTML для стилизации сообщений -->
-    {% endfor %}
-  {% endif %}
-{% endwith %}
-
 {% block content %}
 <div class="main-container">
     <h1 class="news-feed-title">News Feed</h1>
-
     <!-- Форма для создания поста -->
     <div class="post-form">
         <form method="post" action="{{ url_for('posts.create_post') }}" enctype="multipart/form-data">

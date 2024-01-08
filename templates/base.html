@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <title>MySpace Clone</title>
     <div style="justify-content: space-between; padding: 10px; background-color: #f4f4f4;">
@@ -11,6 +12,33 @@
         </div>
 </head>
 <body>
+        <script>
+        document.addEventListener("DOMContentLoaded", function() {
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+            {% for category, message in messages %}
+                Toast.fire({
+                icon: '{{ category }}',
+                title: '{{ message }}'
+                });
+            {% endfor %}
+            {% endif %}
+        {% endwith %}
+        });
+        </script>
+
     <div style="text-align: right;">
         {% if session['username'] %}
             <a href="{{ url_for('profile.profile') }}">Profile</a>

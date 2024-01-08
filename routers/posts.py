@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, request, url_for, jsonify
+from flask import Blueprint, render_template, redirect, request, url_for, jsonify, flash
 from data.db import SQLighter
 from flask import session
 from config import db_uri
@@ -20,7 +20,8 @@ def create_post():
             image_url = utils.upload_to_s3(file=post_image)
             create_post = db.create_post(username=session['username'], text=post_text, image_url=image_url, head_title=head_title, post_owner_id=user_info[0]) == True
             if create_post:
-                return "пост успешно опубликован"
+                flash("Пост успешно опубликован", category='success')
+                return redirect(url_for('home.home'))
             else:
                 return create_post
 
