@@ -32,6 +32,11 @@ class SQLighter:
             cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
             return cursor.fetchone()
     
+    def get_user_by_id(self, user_id):
+        with self.connection.cursor(cursor_factory=DictCursor) as cursor:
+            cursor.execute('SELECT * FROM users WHERE id = %s', (user_id,))
+            return cursor.fetchone()
+    
     def get_posts(self):
         self.cursor.execute('''
             SELECT posts.id, posts.text, posts.image_url, posts.created_at, users.username, posts.head_title, posts.username, posts.post_owner_id

@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from flask_session import Session
 from data.db import SQLighter
 from werkzeug.security import generate_password_hash, check_password_hash
 from config import db_uri
+import config
+from api_v1 import v1 as apiv1
 
 
 app = Flask(__name__)
@@ -121,6 +123,22 @@ def create_post():
     else:
         flash('Произошла ошибка: вы не авторизованы', 'auth error')
 
+@app.route('/api/<string:method>')
+def api_callback(method):
+    # Check if the user is logged in
+    if 'username' in session and session['username']:
+        if method == 'get_user':
+            user_id = request.args.get('user_id', type=int)
+            if user_id is not None:
+                return apiv1.get_user(user_id)
+            else:
+                return jsonify({"error": "Missing user_id"}), 400
+        # You can add more methods here
+        else:
+            return jsonify({"error": "API METHOD ERROR"}), 400
+    else:
+        return jsonify({"error": "Unauthorized: No active session"}), 401
+    
 @app.route('/users/<int:user_id>')
 def view_profile(user_id):
     db = SQLighter(db_uri)
