@@ -128,3 +128,20 @@ class SQLighter:
                 friend_usernames.append(friend_info['username'])
         print(friend_usernames)
         return friend_usernames
+    
+    def add_comment(self, post_id, text, user_id):
+        if post_id:
+            self.cursor.execute('INSERT INTO comments (post_id, text, user_id) VALUES (%s, %s, %s)', (post_id, text, user_id))
+            self.connection.commit()
+
+    def get_comments(self, post_id):
+        with self.connection.cursor(cursor_factory=DictCursor) as cursor:
+            query = """
+            SELECT c.id, c.text, c.created_at, u.username, u.id as user_id
+            FROM comments c
+            JOIN users u ON c.user_id = u.id
+            WHERE c.post_id = %s
+            ORDER BY c.created_at DESC
+            """
+            cursor.execute(query, (post_id,))
+            return cursor.fetchall()

@@ -34,6 +34,17 @@
         {% endif %}
         <p class="post-text">{{ post['text'] }}</p> <!-- Текст поста -->
         <span class="post-date">{{ post['created_at'] }} date</span> <!-- Дата создания -->
+        <!-- Форма для комментариев -->
+    <form method="post" action="{{ url_for('posts.create_comment', post_id=post['id']) }}">
+      <textarea name="comment_text" placeholder="Add a comment..."></textarea>
+      <button type="submit">Comment</button>
+    </form>
+    <!-- Отображение комментариев к посту -->
+    {% for comment in post['comments'] %}
+        <div class="comment">
+            <p>{{ comment['username'] }}: {{ comment['text'] }}</p>
+        </div>
+    {% endfor %}
     </div>
 {% endfor %}
 </div>

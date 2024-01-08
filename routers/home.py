@@ -21,7 +21,8 @@ def home():
             'created_at': post[3],
             'head_title': post[5],
             'username': post[6],
-            'post_owner_id': post[7]
+            'post_owner_id': post[7],
+            'comments': db.get_comments(post[0])  # Извлекаем комментарии для каждого поста
         }
         post_photo_name = post_dict['image_name']
         post_dict['full_image_url'] = get_full_image_url(post_photo_name)
