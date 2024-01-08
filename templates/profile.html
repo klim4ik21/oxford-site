@@ -5,7 +5,7 @@
 {% block content %}
     <h1>profile Page</h1>
     <div class="post-form">
-        <form method="post" action="{{ url_for('img_avatar_update') }}" enctype="multipart/form-data">
+        <form method="post" action="{{ url_for('profile.img_avatar_update') }}" enctype="multipart/form-data">
         <input type="file" name="img_avatar" class="avatar-image-input">
         <button type="submit" class="post-submit-btn">Update Avatar</button>
     </form>
@@ -44,7 +44,7 @@
      {% for request in friend_requests %}
          <div class="friend-request">
              <p>Запрос от {{ request.sender_username }}</p>
-             <form action="{{ url_for('respond_friend_request', request_id=request.request_id) }}" method="post">
+             <form action="{{ url_for('friends.respond_friend_request', request_id=request.request_id) }}" method="post">
                  <button name="response" value="accepted" type="submit" class="btn btn-success">Принять</button>
                  <button name="response" value="declined" type="submit" class="btn btn-danger">Отклонить</button>
              </form>

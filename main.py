@@ -6,190 +6,35 @@ from config import db_uri
 import config
 from api_v1 import v1 as apiv1
 
+from flask import Flask
+from flask_session import Session
+from routers.api import api_bp
+from routers.friends import friends_bp
+from routers.home import home_bp
+from routers.login import login_bp
+from routers.posts import posts_bp
+from routers.profile import profile_bp
+from routers.register import reg_bp
+from routers.users import users_bp  # Импортируйте конфигурацию
 
 app = Flask(__name__)
-app.secret_key = '111'
 
-# Настройка Flask-Session
+# Конфигурация приложения
+app.secret_key == '111'
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-def get_full_image_url(image_path):
-    if image_path:
-        db = SQLighter(db_uri)
-        print(db.find_photo(photo_name=image_path))
-        return db.find_photo(photo_name=image_path)
-    return None
+# Регистрация Blueprints
+app.register_blueprint(home_bp)
+app.register_blueprint(api_bp)
+app.register_blueprint(users_bp)
+app.register_blueprint(friends_bp)
+app.register_blueprint(login_bp)
+app.register_blueprint(posts_bp)
+app.register_blueprint(profile_bp)
+app.register_blueprint(reg_bp)
 
-@app.route('/')
-def home():
-    db = SQLighter(db_uri)
-    if 'username' in session:
-        db.update_last_seen(session['username'])
-    posts = db.get_posts()
-    posts_list = []
-    for post in posts:
-        post_dict = {
-            'id': post[0],
-            'text': post[1],
-            'image_name': post[2],
-            'created_at': post[3],
-            'head_title': post[5],
-            'username': post[6],
-            'post_owner_id': post[7]
-        }
-        post_photo_name = post_dict['image_name']
-        post_dict['full_image_url'] = get_full_image_url(post_photo_name)
-        posts_list.append(post_dict)
-
-    return render_template('index.html', posts=posts_list)
-    # if 'username' in session:
-    #     return render_template('index.html', username=session['username'], posts=posts)
-    # else:
-    #     return render_template('index.html', posts=posts)
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    db = SQLighter(db_uri)
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        email = request.form['email']  # Получение email из формы
-        password_hash = generate_password_hash(password)
-        db.create_user(username, password_hash, email)
-        return redirect(url_for('home'))
-    return render_template('register.html')
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    db = SQLighter(db_uri)
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-
-        # Здесь должна быть ваша логика проверки учетных данных
-        user = db.get_user(username)
-        if user and check_password_hash(user['password_hash'], password):
-            session['username'] = username
-            return redirect(url_for('home'))  # Перенаправление на главную страницу после входа
-        else:
-            # Если учетные данные неверны, показать сообщение об ошибке
-            print("Some error!")
-            flash('Invalid username or password')
-
-    return render_template('login.html')
-
-@app.route('/add_friend/<int:user_id2>', methods=['POST'])
-def add_friend(user_id2):
-    if 'username' in session:
-        db = SQLighter(db_uri)
-        user1 = db.get_user(session['username'])  # ID пользователя, отправляющего запрос
-        db.update_friend(sender_id=user1[0], to_user_id=user_id2, status='send')
-        return jsonify({'status': 'request_sent'})
-
-@app.route('/respond_friend_request/<int:request_id>', methods=['POST'])
-def respond_friend_request(request_id):
-    response = request.form['response']  # 'accepted' или 'declined'
-    if 'username' in session:
-        db = SQLighter(db_uri)
-        if response == 'accepted' or response == 'declined':
-            db.update_friend(sender_id=request_id, to_user_id=None, status=f'{response}')
-
-    return redirect(url_for('profile'))
-
-
-@app.route('/get_friends/<int:user_id>', methods=['GET'])
-def get_friends(user_id):
-    db.get
-
-    return jsonify(friends)
-
-
-@app.route('/profile')
-def profile():
-    db = SQLighter(db_uri)
-    if 'username' in session:
-        username = session['username']
-        user_info = db.get_user(username)
-        user_id = user_info['id']  # Ensure this matches your data structure
-        last_seen = db.get_last_seen(username)
-        online_status = db.is_online(last_seen)
-        avatar = db.get_avatar(user_id)
-        friend_requests = db.get_friend_requests(user_id)
-        friend_usernames = db.get_friends(user_id)
-        # Debugging: Print the friend_requests to see the structure
-        print(friend_requests)
-
-        return render_template('profile.html', user=user_info, is_online=online_status, avatar=avatar, friend_requests=friend_requests, friends=friend_usernames)
-    else:
-        return redirect(url_for('login'))
-    
-@app.route('/img_update_avatar', methods=['POST'])
-def img_avatar_update():
-    if 'username' in session:
-        db = SQLighter(db_uri)
-        user_info = db.get_user(session['username'])
-        avatar = request.files['img_avatar']
-        db.update_avatar(avatar, user_info[0])
-        return redirect(url_for('home'))
-
-@app.route('/create_post', methods=['POST'])
-def create_post():
-    if 'username' in session:
-        db = SQLighter(db_uri)
-        user_info = db.get_user(session['username'])
-        head_title = request.form['head_title']
-        post_text = request.form['post_text']
-        post_image = request.files['post_image']
-        if post_image:
-            image_url = db.upload_to_s3(post_image)
-            create_post = db.create_post(username=session['username'], text=post_text, image_url=image_url, head_title=head_title, post_owner_id=user_info[0]) == True
-            if create_post:
-                flash("пост успешно опубликован")
-            else:
-                flash(create_post)
-
-        return redirect(url_for('home'))
-    else:
-        flash('Произошла ошибка: вы не авторизованы', 'auth error')
-
-@app.route('/api/<string:method>')
-def api_callback(method):
-    # Check if the user is logged in
-    if 'username' in session and session['username']:
-        if method == 'get_user':
-            user_id = request.args.get('user_id', type=int)
-            if user_id is not None:
-                return apiv1.get_user(user_id)
-            else:
-                return jsonify({"error": "Missing user_id"}), 400
-        # You can add more methods here
-        else:
-            return jsonify({"error": "API METHOD ERROR"}), 400
-    else:
-        return jsonify({"error": "Unauthorized: No active session"}), 401
-    
-@app.route('/users/<int:user_id>')
-def view_profile(user_id):
-    db = SQLighter(db_uri)
-    user_info = db.get_user_by_id(user_id)
-    avatar = db.get_avatar(user_id)
-    if user_info:
-        print(user_info[1])
-        last_seen = db.get_last_seen(user_info[1])
-        online_status = db.is_online(last_seen)
-        print(online_status)
-        return render_template('user_profile.html', user=user_info, is_online=online_status, avatar=avatar)
-    else:
-        flash('Пользователь не найден')
-        return redirect(url_for('home'))
-
-
-@app.route('/logout')
-def logout():
-    session.pop('username', None)
-    return redirect(url_for('home'))
-
+# Запуск приложения
 if __name__ == '__main__':
     app.run(debug=True)

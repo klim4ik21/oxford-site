@@ -7,7 +7,7 @@
         {% if avatar %}
             <img src="{{ avatar }}" alt="Post image", style="max-width: 20%; max-height: 20%;"\n>
         {% endif %}
-        <form action="{{ url_for('add_friend', user_id2=user.id) }}" method="post">
+        <form action="{{ url_for('friends.add_friend', user_id2=user.id) }}" method="post">
             <button type="submit">Добавить в друзья</button>
         </form>
     </h1>

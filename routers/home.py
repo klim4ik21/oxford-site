@@ -1,9 +1,12 @@
-from flask import Blueprint
+from flask import Blueprint, render_template
 from data.db import SQLighter
+from flask import session
+from config import db_uri
+from utils import get_full_image_url
 
-auth_bp = Blueprint('auth', __name__)
+home_bp = Blueprint('home', __name__)
 
-@auth_bp.route('/')
+@home_bp.route('/')
 def home():
     db = SQLighter(db_uri)
     if 'username' in session:
