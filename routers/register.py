@@ -15,5 +15,5 @@ def register():
         email = request.form['email']  # Получение email из формы
         password_hash = generate_password_hash(password)
         db.create_user(username, password_hash, email)
-        return redirect(url_for('home_bp.home'))
+        return redirect(url_for('home.home'))
     return render_template('register.html')

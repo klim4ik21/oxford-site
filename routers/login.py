@@ -17,7 +17,7 @@ def login():
         user = db.get_user(username)
         if user and check_password_hash(user['password_hash'], password):
             session['username'] = username
-            return redirect(url_for('home'))  # Перенаправление на главную страницу после входа
+            return redirect(url_for('home.home'))  # Перенаправление на главную страницу после входа
         else:
             # Если учетные данные неверны, показать сообщение об ошибке
             print("Some error!")
@@ -28,4 +28,4 @@ def login():
 @login_bp.route('/logout')
 def logout():
     session.pop('username', None)
-    return redirect(url_for('home_bp.home'))
+    return redirect(url_for('home.home'))
