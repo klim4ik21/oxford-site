@@ -1,19 +1,7 @@
 import psycopg2
 import datetime
 from psycopg2.extras import DictCursor
-import boto3
-from botocore.client import Config
-from botocore.exceptions import NoCredentialsError
-from werkzeug.utils import secure_filename
-
-s3 = boto3.client(
-    's3',
-    endpoint_url='https://s3.timeweb.com',
-    region_name='ru-1',
-    aws_access_key_id='cb42813',
-    aws_secret_access_key='488554bbf25da342105ef70286f08971',
-    config=Config(signature_version='s3v4')
-)
+import utils
 
 db_uri = "postgresql://gen_user:q%2Fgy%3FQy%3F0%3Dfi%5C%3F@109.172.88.61:5432/default_db"
 
@@ -45,25 +33,6 @@ class SQLighter:
             ORDER BY posts.created_at DESC
         ''')
         return self.cursor.fetchall()
-    
-    def find_photo(self, photo_name):
-        response = s3.list_objects_v2(Bucket="1f38301d-d3dcd88d-0a80-4ad8-981a-5aa4655a891b", Prefix=photo_name)
-        start_timer = datetime.datetime.now()
-        if 'Contents' in response:
-            photos = [item['Key'] for item in response['Contents']]
-            try:
-                response_photo = s3.generate_presigned_url('get_object',
-                                                            Params={'Bucket': "1f38301d-d3dcd88d-0a80-4ad8-981a-5aa4655a891b",
-                                                                    'Key': photos[0]},
-                                                            ExpiresIn=3600)
-            except NoCredentialsError:
-                print("Ошибка учетных данных")
-                return None
-            end_timer = datetime.datetime.now()
-            print(end_timer - start_timer)
-            return response_photo
-        else:
-            return "Cant Load photo"
         
     def update_last_seen(self, username):
         current_time = datetime.datetime.now()
@@ -90,7 +59,7 @@ class SQLighter:
     
     def update_avatar(self, file, user_id):
         filename = f'avatar_{user_id}_{file.filename}'
-        self.upload_to_s3v2(file, filename=filename)
+        utils.upload_to_s3v2(file, filename=filename)
         self.cursor.execute('UPDATE users SET img_avatar = %s WHERE id = %s', (filename, user_id))
         self.connection.commit()
 
@@ -100,43 +69,9 @@ class SQLighter:
             result = cursor.fetchone()
             if result and result['img_avatar']:
                 avatar_name = result['img_avatar']
-                return self.find_photo(avatar_name)
+                return utils.find_s3(avatar_name)
             else:
                 return None  # Или URL изображения по умолчанию, если аватар отсутствует
-
-        
-    def upload_to_s3(self, file):
-        try:
-            # Получаем имя файла из объекта file
-            filename = secure_filename(file.filename)
-            print(f"Начинается загрузка файла: {filename}")
-
-            # Загружаем файл на S3
-            s3.upload_fileobj(
-                file,   
-                "1f38301d-d3dcd88d-0a80-4ad8-981a-5aa4655a891b",
-                filename
-            )
-            print(f"Файл успешно загружен: {filename}")
-            return filename
-        except Exception as error:
-            print(f"Ошибка при загрузке файла: {error}")
-            return
-        
-    def upload_to_s3v2(self, file, filename):
-        try:
-
-            # Загружаем файл на S3
-            s3.upload_fileobj(
-                file,   
-                "1f38301d-d3dcd88d-0a80-4ad8-981a-5aa4655a891b",
-                filename
-            )
-            print(f"Файл успешно загружен: {filename}")
-            return filename
-        except Exception as error:
-            print(f"Ошибка при загрузке файла: {error}")
-            return
         
     def create_post(self, text, image_url, head_title, username, post_owner_id):
         query = '''
@@ -145,7 +80,6 @@ class SQLighter:
 
         '''
         try:
-            print("ПОСТ УСПЕШНО СОЗДАН")
             self.cursor.execute(query, (text, 3, image_url, head_title, username, post_owner_id))
             self.connection.commit()
             return True

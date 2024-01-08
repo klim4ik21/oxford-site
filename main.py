@@ -3,10 +3,8 @@ from flask_session import Session
 from data.db import SQLighter
 from werkzeug.security import generate_password_hash, check_password_hash
 from config import db_uri
-import config
 from api_v1 import v1 as apiv1
 
-from flask import Flask
 from flask_session import Session
 from routers.api import api_bp
 from routers.friends import friends_bp

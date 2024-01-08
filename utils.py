@@ -1,8 +1,8 @@
-from data.db import SQLighter
 from config import db_uri
 import datetime
 import boto3
 from botocore.client import Config
+from werkzeug.utils import secure_filename
 
 s3 = boto3.client(
     's3',
@@ -46,3 +46,37 @@ def get_full_image_url(image_path):
         print(f'GET FULL IMAGE URL{end_timer - start_timer}')
         return photo
     return None
+
+        
+def upload_to_s3v2(self, file, filename):
+    try:
+
+        # Загружаем файл на S3
+        s3.upload_fileobj(
+            file,   
+            "1f38301d-d3dcd88d-0a80-4ad8-981a-5aa4655a891b",
+            filename
+        )
+        print(f"Файл успешно загружен: {filename}")
+        return filename
+    except Exception as error:
+        print(f"Ошибка при загрузке файла: {error}")
+        return
+    
+def upload_to_s3(file):
+        try:
+            # Получаем имя файла из объекта file
+            filename = secure_filename(file.filename)
+            print(f"Начинается загрузка файла: {filename}")
+
+            # Загружаем файл на S3
+            s3.upload_fileobj(
+                file,   
+                "1f38301d-d3dcd88d-0a80-4ad8-981a-5aa4655a891b",
+                filename
+            )
+            print(f"Файл успешно загружен: {filename}")
+            return filename
+        except Exception as error:
+            print(f"Ошибка при загрузке файла: {error}")
+            return

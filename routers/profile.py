@@ -3,6 +3,7 @@ from data.db import SQLighter
 from flask import session
 from config import db_uri
 from werkzeug.security import generate_password_hash, check_password_hash
+import utils
 
 profile_bp = Blueprint('profile', __name__)
 
