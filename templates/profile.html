@@ -24,4 +24,32 @@
     <!-- Отображение другой информации о пользователе -->
     <p>Email: {{ user.email }}</p>
     <!-- Дополнительные детали профиля -->
+
+ <!-- Friends Section -->
+ {% if friends %}
+ <div class="friends-section">
+     <h2>Друзья:</h2>
+     <ul>
+         {% for friend in friends %}
+             <li>{{ friend }}</li>
+         {% endfor %}
+     </ul>
+ </div>
+{% endif %}
+
+<!-- Friend Requests Section -->
+{% if friend_requests %}
+ <div class="friend-requests-section">
+     <h3>Запросы:</h3>
+     {% for request in friend_requests %}
+         <div class="friend-request">
+             <p>Запрос от {{ request.sender_username }}</p>
+             <form action="{{ url_for('respond_friend_request', request_id=request.request_id) }}" method="post">
+                 <button name="response" value="accepted" type="submit" class="btn btn-success">Принять</button>
+                 <button name="response" value="declined" type="submit" class="btn btn-danger">Отклонить</button>
+             </form>
+         </div>
+     {% endfor %}
+ </div>
+{% endif %}
 {% endblock %}

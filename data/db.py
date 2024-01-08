@@ -153,3 +153,44 @@ class SQLighter:
             print(f"Ошибка при создании поста: {e}")
             self.connection.rollback()
             return False
+        
+    def update_friend(self, sender_id, to_user_id, status):
+        if status == 'send':
+            self.cursor.execute('INSERT INTO friends (user_id1, user_id2, status) VALUES (%s, %s, %s)', (sender_id, to_user_id, 'pending'))
+            self.connection.commit()
+        elif status == 'accepted':
+            self.cursor.execute('UPDATE friends SET status = %s WHERE id = %s', ('accepted', sender_id))
+            self.connection.commit() 
+
+    def get_friend_requests(self, user_id):
+        with self.connection.cursor(cursor_factory=DictCursor) as cursor:
+            query = """
+            SELECT u.id as user_id, u.username as sender_username, f.id as request_id
+            FROM friends f
+            JOIN users u ON f.user_id1 = u.id
+            WHERE f.user_id2 = %s AND f.status = 'pending'
+            """
+            cursor.execute(query, (user_id,))
+            return cursor.fetchall()
+        
+    def get_friends(self, user_id):
+        with self.connection.cursor(cursor_factory=DictCursor) as cursor:
+            # This query fetches the user IDs of friends.
+            query = """
+            SELECT f.user_id1, f.user_id2
+            FROM friends f
+            WHERE (f.user_id1 = %s OR f.user_id2 = %s) AND f.status = 'accepted'
+            """
+            cursor.execute(query, (user_id, user_id))
+            rows = cursor.fetchall()
+        
+        # Now fetch the usernames using the get_user_by_id function
+        friend_usernames = []
+        for row in rows:
+            # Check which user_id is the friend's ID and get their username
+            friend_id = row['user_id1'] if row['user_id2'] == user_id else row['user_id2']
+            friend_info = self.get_user_by_id(friend_id)
+            if friend_info:
+                friend_usernames.append(friend_info['username'])
+        print(friend_usernames)
+        return friend_usernames

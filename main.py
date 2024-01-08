@@ -80,17 +80,48 @@ def login():
 
     return render_template('login.html')
 
+@app.route('/add_friend/<int:user_id2>', methods=['POST'])
+def add_friend(user_id2):
+    if 'username' in session:
+        db = SQLighter(db_uri)
+        user1 = db.get_user(session['username'])  # ID пользователя, отправляющего запрос
+        db.update_friend(sender_id=user1[0], to_user_id=user_id2, status='send')
+        return jsonify({'status': 'request_sent'})
+
+@app.route('/respond_friend_request/<int:request_id>', methods=['POST'])
+def respond_friend_request(request_id):
+    response = request.form['response']  # 'accepted' или 'declined'
+    if 'username' in session:
+        db = SQLighter(db_uri)
+        if response == 'accepted' or response == 'declined':
+            db.update_friend(sender_id=request_id, to_user_id=None, status=f'{response}')
+
+    return redirect(url_for('profile'))
+
+
+@app.route('/get_friends/<int:user_id>', methods=['GET'])
+def get_friends(user_id):
+    db.get
+
+    return jsonify(friends)
+
+
 @app.route('/profile')
 def profile():
     db = SQLighter(db_uri)
     if 'username' in session:
         username = session['username']
         user_info = db.get_user(username)
+        user_id = user_info['id']  # Ensure this matches your data structure
         last_seen = db.get_last_seen(username)
         online_status = db.is_online(last_seen)
-        avatar = db.get_avatar(user_info[0])
-        print(avatar)
-        return render_template('profile.html', user=user_info, is_online=online_status, avatar=avatar)
+        avatar = db.get_avatar(user_id)
+        friend_requests = db.get_friend_requests(user_id)
+        friend_usernames = db.get_friends(user_id)
+        # Debugging: Print the friend_requests to see the structure
+        print(friend_requests)
+
+        return render_template('profile.html', user=user_info, is_online=online_status, avatar=avatar, friend_requests=friend_requests, friends=friend_usernames)
     else:
         return redirect(url_for('login'))
     
