@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, request, url_for
+from flask import Blueprint, render_template, redirect, request, url_for, flash
 from data.db import SQLighter
 from flask import session
 from config import db_uri
@@ -17,11 +17,12 @@ def login():
         user = db.get_user(username)
         if user and check_password_hash(user['password_hash'], password):
             session['username'] = username
+            flash("Success", category='success')
             return redirect(url_for('home.home'))  # Перенаправление на главную страницу после входа
         else:
             # Если учетные данные неверны, показать сообщение об ошибке
-            print("Some error!")
-            return 'Invalid username or password'
+            flash("Invalid Username or Password", category='warning')
+            return redirect(url_for('login.login'))
 
     return render_template('login.html')
 

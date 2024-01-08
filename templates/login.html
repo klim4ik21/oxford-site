@@ -1,6 +1,7 @@
-<!-- templates/login.html -->
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'notifs.html' %}
+
+{% block content %}
+
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
@@ -17,4 +18,5 @@
     </form>
     <a href="{{ url_for('register.register') }}">Register</a>
 </body>
-</html>
+    
+{% endblock %}
