@@ -31,11 +31,14 @@ def create_post():
 @posts_bp.route('/create_comment/<int:post_id>', methods=['POST'])
 def create_comment(post_id):
     db = SQLighter(db_uri)
-    # Получение текста комментария из формы
-    comment_text = request.form.get('comment_text')
-    # Получение ID пользователя (например, из сессии)
-    user_id = db.get_user(session.get('username'))
+    if 'username' in session:
+        # Получение текста комментария из формы
+        comment_text = request.form.get('comment_text')
+        # Получение ID пользователя (например, из сессии)
+        user_id = db.get_user(session.get('username'))
 
-    db.add_comment(post_id, comment_text, user_id[0])
+        db.add_comment(post_id, comment_text, user_id[0])
 
-    return redirect(url_for('home.home'))
+        return redirect(url_for('home.home'))
+    else:
+        return 'вы не авторизованы'
