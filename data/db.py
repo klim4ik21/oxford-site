@@ -48,7 +48,7 @@ class SQLighter:
     
     def find_photo(self, photo_name):
         response = s3.list_objects_v2(Bucket="1f38301d-d3dcd88d-0a80-4ad8-981a-5aa4655a891b", Prefix=photo_name)
-
+        start_timer = datetime.datetime.now()
         if 'Contents' in response:
             photos = [item['Key'] for item in response['Contents']]
             try:
@@ -59,6 +59,8 @@ class SQLighter:
             except NoCredentialsError:
                 print("Ошибка учетных данных")
                 return None
+            end_timer = datetime.datetime.now()
+            print(end_timer - start_timer)
             return response_photo
         else:
             return "Cant Load photo"
@@ -97,7 +99,6 @@ class SQLighter:
             cursor.execute('SELECT img_avatar FROM users WHERE id = %s', (user_id,))
             result = cursor.fetchone()
             if result and result['img_avatar']:
-                print(f"!!! {result['img_avatar']}")
                 avatar_name = result['img_avatar']
                 return self.find_photo(avatar_name)
             else:
@@ -124,7 +125,6 @@ class SQLighter:
         
     def upload_to_s3v2(self, file, filename):
         try:
-            print(f"v2 Начинается загрузка файла: {filename}")
 
             # Загружаем файл на S3
             s3.upload_fileobj(
