@@ -43,3 +43,9 @@ def create_comment(post_id):
         return redirect(url_for('home.home'))
     else:
         return 'вы не авторизованы'
+
+@posts_bp.route('/get_posts', methods=['GET'])
+def get_posts():
+    db = SQLighter(db_uri)
+    posts_data = db.get_posts()  # Предполагаем, что есть такой метод
+    return jsonify(posts_data)

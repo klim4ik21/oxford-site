@@ -39,4 +39,30 @@
     </div>
 {% endfor %}
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+function updatePosts() {
+    $.ajax({
+        url: '/get_posts',
+        type: 'GET',
+        dataType: 'json',
+        success: function(posts) {
+            var postsHtml = '';
+            posts.forEach(function(post) {
+                postsHtml += '<div class="post">' +
+                              '<h2>' + post.head_title + '</h2>' +
+                              '<p>' + post.post_text + '</p>' +
+                              '</div>';  // Предположим, что у постов есть заголовок и текст
+            });
+            $('.posts-container').html(postsHtml);
+        }
+    });
+}
+
+$(document).ready(function() {
+    updatePosts(); // Обновить посты при загрузке страницы
+    setInterval(updatePosts, 5000); // Обновлять посты каждые 5 секунд
+});
+</script>
+
 {% endblock %}
