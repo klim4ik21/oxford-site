@@ -21,7 +21,7 @@ def home():
     posts_list = posts_response.json.get('posts', []) if hasattr(posts_response, 'json') else []
     user_agent = request.headers.get('User-Agent')
     if "Mobile" in user_agent:
-        return redirect(url_for('mobile_index'))
+        return redirect(url_for('home.mobile_index'))
     else:
         return render_template('index.html', posts=posts_list)
     

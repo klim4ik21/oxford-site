@@ -52,31 +52,30 @@
         document.addEventListener('DOMContentLoaded', function() {
             var commentsPanel = document.getElementById('commentsPanel');
             var mc = new Hammer(commentsPanel);
-    
+        
             mc.get('swipe').set({ direction: Hammer.DIRECTION_DOWN });
-    
-            mc.on('swipe', function(ev) {
-                if (ev.direction === Hammer.DIRECTION_DOWN) {
+        
+            mc.on('swipe', function() {
+                commentsPanel.style.bottom = '-100%'; // Закрыть панель комментариев
+            });
+        
+            // Обработчик клика для закрытия панели
+            document.addEventListener('click', function(event) {
+                if (!commentsPanel.contains(event.target) && !event.target.matches('.comment-button')) {
                     commentsPanel.style.bottom = '-100%';
                 }
             });
         });
-
         function showCommentsPanel(postId) {
             var commentsContent = document.getElementById('commentsContent');
             commentsContent.innerHTML = 'Загрузка комментариев...';
-        
+            
             fetch(`http://127.0.0.1:5000/api/get_post_comments?post_id=${postId}`)
                 .then(response => response.json())
                 .then(comments => {
-                    if (comments.length === 0) {
-                        commentsContent.innerHTML = 'Комментариев нет.';
-                        return;
-                    }
-        
                     commentsContent.innerHTML = comments.map(comment =>
                         `<div class="comment">
-                            <span class="comment-username">${comment[3]}</span>
+                            <a href="/users/${comment[4]}" class="comment-username">${comment[3]}</a>
                             <p class="comment-text">${comment[1]}</p>
                         </div>`
                     ).join('');
