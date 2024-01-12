@@ -1,0 +1,11 @@
+<form method="post" action="{{ url_for('posts.create_comment', post_id=post['id']) }}" class="comment-form">
+    <textarea name="comment_text" placeholder="Add a comment..."></textarea>
+    <button type="submit">Comment</button>
+</form>
+
+{% for comment in post['comments'] %}
+<div class="comment">
+    <span class="comment-username">{{ comment[3] }}</span>
+    <p class="comment-text">{{ comment[1] }}</p>
+</div>
+{% endfor %}

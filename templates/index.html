@@ -4,41 +4,40 @@
 <div class="main-container">
     <h1 class="news-feed-title">News Feed</h1>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <!-- Форма для создания поста -->
-    <div class="post-form">
-        <form method="post" action="{{ url_for('posts.create_post') }}" enctype="multipart/form-data">
-            <textarea name="head_title" placeholder="name of your post" class="head_title-textarea"></textarea>
-            <textarea name="post_text" placeholder="What's on your mind?" class="post-textarea"></textarea>
-            <input type="file" name="post_image" class="post-image-input">
-            <button type="submit" class="post-submit-btn">Post</button>
-        </form>
-    </div>
+    <div class="posts-container">
+        {% for post in posts %}
+        <div class="news-item">
+            <div class="post-header">
+                <a href="{{ url_for('users.view_profile', user_id=post['post_owner_id']) }}" class="post-username">{{ post['username'] }}</a>
+                <span class="post-date">{{ post['created_at'] }}</span>
+            </div>
 
-    <!-- Фид новостей -->
-    {% for post in posts %}
-    <div class="news-item">
-        <h3 class="post-head_title">Ttitle {{ post['head_title'] }}</h3>
-        <h3 class="post-username">
-            <a href="{{ url_for('users.view_profile', user_id=post['post_owner_id']) }}">{{ post['username'] }}</a>
-        </h3>
-        {% if post['full_image_url'] %}
-        <img class="lazy-load" data-src="{{ post['full_image_url'] }}" alt="Post image", style="max-width: 20%; max-height: 20%;">
-        {% endif %}
-        <p class="post-text">{{ post['text'] }}</p> <!-- Текст поста -->
-        <span class="post-date">{{ post['created_at'] }} date</span> <!-- Дата создания -->
-        <!-- Форма для комментариев -->
-    <form method="post" action="{{ url_for('posts.create_comment', post_id=post['id']) }}">
-      <textarea name="comment_text" placeholder="Add a comment..."></textarea>
-      <button type="submit">Comment</button>
-    </form>
-    <!-- Отображение комментариев к посту -->
-    {% for comment in post['comments'] %}
-    <div class="comment">
-        <p>{{ comment[3] }}: {{ comment[1] }}</p>
+            {% if post['full_image_url'] %}
+            <div class="post-image-container">
+                <img class="post-image" src="{{ post['full_image_url'] }}" alt="Post image">
+            </div>
+            {% endif %}
+
+            <div class="post-content">
+                <h3 class="post-title">{{ post['head_title'] }}</h3>
+                <p class="post-text">{{ post['text'] }}</p>
+            </div>
+
+            <div class="post-comments">
+                <form method="post" action="{{ url_for('posts.create_comment', post_id=post['id']) }}" class="comment-form">
+                    <textarea name="comment_text" placeholder="Add a comment..."></textarea>
+                    <button type="submit">Comment</button>
+                </form>
+                
+                {% for comment in post['comments'] %}
+                <div class="comment">
+                    <span class="comment-username">{{ comment[3] }}</span>
+                    <p class="comment-text">{{ comment[1] }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-    </div>
-{% endfor %}
 </div>
-
 {% endblock %}

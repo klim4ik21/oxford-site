@@ -1,0 +1,125 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #e0e0e0;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+}
+
+.main-container {
+    padding: 10px;
+}
+
+.news-feed-title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #0000ee;
+}
+
+.posts-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.news-item {
+    background-color: #ffffff;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.post-header {
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f7f7f7;
+}
+
+.post-image-container img {
+    width: 100%;
+    height: auto;
+}
+
+.post-content {
+    padding: 10px;
+}
+
+.post-content h3 {
+    margin: 0;
+    color: #0000ee;
+}
+
+.comment-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #d0d0d0;
+    border: none;
+    font-family: 'Courier New', Courier, monospace;
+    cursor: pointer;
+}
+
+.comment-button:hover {
+    background-color: #b0b0b0;
+}
+
+.comments-panel {
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    z-index: 1000;
+    height: 50%;
+    overflow-y: scroll;
+    transition: bottom 0.3s;
+}
+
+.comments-content {
+    padding: 20px;
+}
+
+.comment-form-container {
+    padding: 10px;
+    border-top: 1px solid #d0d0d0;
+    background-color: #f8f8f8;
+}
+
+.comment-form textarea {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #d0d0d0;
+}
+
+.comment-form button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: #d0d0d0;
+    cursor: pointer;
+}
+
+.comment-form button:hover {
+    background-color: #b0b0b0;
+}
+
+.comment {
+    padding: 5px;
+    border-bottom: 1px solid #d0d0d0;
+}
+
+.comment:last-child {
+    border-bottom: none;
+}
+
+.comment-username {
+    font-weight: bold;
+}
+
+.comment-text {
+    margin: 5px 0;
+}
