@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile_profile.css') }}">
+</head>
+<body>
+    <div class="header">
+        <a href="{{ url_for('home.home') }}" class="home-link">Home</a>
+        {% if session['username'] %}
+            <a href="{{ url_for('login.logout') }}" class="logout-link">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login.login') }}" class="login-link">Login</a>
+        {% endif %}
+    </div>
+
+    <div class="profile-container">
+        <div class="avatar-section">
+            {% if avatar %}
+                <img src="{{ avatar }}" alt="Avatar image" class="avatar-image">
+            {% endif %}
+            <h1 class="username">{{ user.username }}</h1>
+            {% if is_online %}
+                <p class="status online">Online</p>
+            {% else %}
+                <p class="status offline">Last seen: {{ user.last_seen.strftime('%Y-%m-%d %H:%M') }}</p>
+            {% endif %}
+        </div>
+
+        <div class="info-section">
+            <p class="email">Email: {{ user.email }}</p>
+            <form method="post" action="{{ url_for('profile.img_avatar_update') }}" enctype="multipart/form-data" class="update-avatar-form">
+                <input type="file" name="img_avatar" class="avatar-input">
+                <button type="submit" class="update-avatar-btn">Update Avatar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Additional sections (friends, friend requests) can be added here if necessary -->
+
+</body>
+</html>

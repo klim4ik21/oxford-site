@@ -28,7 +28,28 @@ def profile():
         return render_template('profile.html', user=user_info, is_online=online_status, avatar=avatar, friend_requests=friend_requests, friends=friend_usernames, posts=posts_list)
     else:
         return redirect(url_for('login_bp.login'))
-    
+
+@profile_bp.route('/mprofile')
+def mprofile():
+    db = SQLighter(db_uri)
+    if 'username' in session:
+        db.update_last_seen(session['username'])
+        username = session['username']
+        user_info = db.get_user(username)
+        user_id = user_info['id']  # Ensure this matches your data structure
+        last_seen = db.get_last_seen(username)
+        online_status = db.is_online(last_seen)
+        avatar = db.get_avatar(user_id)
+        friend_requests = db.get_friend_requests(user_id)
+        friend_usernames = db.get_friends(user_id)
+        # Вызываем функцию get_posts() непосредственно, без HTTP-запроса
+        posts_response = apiv1.get_user_posts(user_id)  # Здесь предполагается, что get_posts возвращает ответ Flask
+        # Получаем список постов из ответа
+        posts_list = posts_response.json.get('posts', []) if hasattr(posts_response, 'json') else []
+        return render_template('mobile_profile.html', user=user_info, is_online=online_status, avatar=avatar, friend_requests=friend_requests, friends=friend_usernames, posts=posts_list)
+    else:
+        return redirect(url_for('login_bp.mlogin'))
+
 
 @profile_bp.route('/img_update_avatar', methods=['POST'])
 def img_avatar_update():

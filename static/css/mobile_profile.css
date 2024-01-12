@@ -1,0 +1,74 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #f0f0f0;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    background-color: #f4f4f4;
+    padding: 10px;
+}
+
+.home-link, .logout-link, .login-link {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.profile-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.avatar-section .avatar-image {
+    width: 150px; /* Устанавливаем фиксированную ширину */
+    height: 150px; /* Устанавливаем фиксированную высоту, равную ширине, для создания круга */
+    border-radius: 50%; /* Делаем изображение круглым */
+    border: 3px solid #333;
+    object-fit: cover; /* Убедитесь, что изображение красиво заполняет область */
+}
+.username {
+    margin: 10px 0;
+}
+
+.status {
+    font-size: 14px;
+}
+
+.online {
+    color: green;
+}
+
+.offline {
+    color: red;
+}
+
+.info-section .email {
+    margin: 10px 0;
+}
+
+.update-avatar-form {
+    margin-top: 20px;
+}
+
+.avatar-input {
+    margin-bottom: 10px;
+}
+
+.update-avatar-btn {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.update-avatar-btn:hover {
+    background-color: #555;
+}
