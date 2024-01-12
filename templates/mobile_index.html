@@ -82,7 +82,8 @@
             var commentsContent = document.getElementById('commentsContent');
             commentsContent.innerHTML = 'Загрузка комментариев...';
             var currentHost = window.location.host;
-            fetch(`http://${currentHost}/api/get_post_comments?post_id=${postId}`)
+            var protocol = currentHost === '127.0.0.1:5000' ? 'http://' : 'https://';
+            fetch(`${protocol}${currentHost}/api/get_post_comments?post_id=${postId}`)
                 .then(response => response.json())
                 .then(comments => {
                     commentsContent.innerHTML = comments.map(comment =>
