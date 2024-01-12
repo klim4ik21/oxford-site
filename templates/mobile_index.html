@@ -44,21 +44,24 @@
 
                 <button class="comment-button" onclick="showCommentsPanel('{{ post['id'] }}')">Comments</button>
             </div>
+            <div class="comments-panel" id="commentsPanel">
+                <div class="comments-content" id="commentsContent">
+                    <!-- Динамическое добавление комментариев -->
+                </div>
+                <div class="comment-form-container">
+                    <div class="comment-form-container">
+                        <form method="post" action="{{ url_for('posts.create_comment', post_id=post['id']) }}" class="comment-form">
+                            <textarea name="comment_text" placeholder="Add a comment..."></textarea>
+                            <button type="submit">Comment</button>
+                        </form>
+                    </div>  
+                </div>
+            </div>
             {% endfor %}
         </div>
     </div>
 
-    <div class="comments-panel" id="commentsPanel">
-        <div class="comments-content" id="commentsContent">
-            <!-- Динамическое добавление комментариев -->
-        </div>
-        <div class="comment-form-container">
-            <form method="post" action="#" class="comment-form">
-                <textarea name="comment_text" placeholder="Add a comment..."></textarea>
-                <button type="submit">Comment</button>
-            </form>
-        </div>
-    </div>
+    
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
