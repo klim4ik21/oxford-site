@@ -33,9 +33,9 @@
     </form>
     <!-- Отображение комментариев к посту -->
     {% for comment in post['comments'] %}
-        <div class="comment">
-            <p>{{ comment['username'] }}: {{ comment['text'] }}</p>
-        </div>
+    <div class="comment">
+        <p>{{ comment[3] }}: {{ comment[1] }}</p>
+    </div>
     {% endfor %}
     </div>
 {% endfor %}
