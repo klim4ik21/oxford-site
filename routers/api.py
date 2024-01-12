@@ -11,7 +11,7 @@ api_bp = Blueprint('api_bp', __name__)
 @api_bp.route('/api/<string:method>')
 def api_callback(method):
     # Check if the user is logged in
-    if 'username' in session and session['username']:
+    if 'username' in session and session['username'] or method != 'get_post_methods':
         # Get User Method
         if method == 'get_user':
             user_id = request.args.get('user_id', type=int)
