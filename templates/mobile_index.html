@@ -51,10 +51,14 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var commentsPanel = document.getElementById('commentsPanel');
-            var hammer = new Hammer(commentsPanel);
+            var mc = new Hammer(commentsPanel);
     
-            hammer.on('swipedown', function() {
-                commentsPanel.style.bottom = '-100%';
+            mc.get('swipe').set({ direction: Hammer.DIRECTION_DOWN });
+    
+            mc.on('swipe', function(ev) {
+                if (ev.direction === Hammer.DIRECTION_DOWN) {
+                    commentsPanel.style.bottom = '-100%';
+                }
             });
         });
 
