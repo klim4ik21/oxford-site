@@ -70,7 +70,7 @@ class SQLighter:
     
     def update_avatar(self, file, user_id):
         filename = f'avatar_{user_id}_{file.filename}'
-        utils.upload_to_s3v2(file, filename=filename)
+        utils.upload_to_s3v2(self, file=file, filename=filename)
         self.cursor.execute('UPDATE users SET img_avatar = %s WHERE id = %s', (filename, user_id))
         self.connection.commit()
 

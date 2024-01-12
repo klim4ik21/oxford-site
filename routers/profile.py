@@ -10,6 +10,9 @@ profile_bp = Blueprint('profile', __name__)
 
 @profile_bp.route('/profile')
 def profile():
+    user_agent = request.headers.get('User-Agent')
+    if "Mobile" in user_agent:
+        return redirect(url_for('profile.mprofile'))
     db = SQLighter(db_uri)
     if 'username' in session:
         db.update_last_seen(session['username'])
@@ -57,5 +60,6 @@ def img_avatar_update():
         db = SQLighter(db_uri)
         user_info = db.get_user(session['username'])
         avatar = request.files['img_avatar']
-        db.update_avatar(avatar, user_info[0])
-        return redirect(url_for('home_bp.home'))
+        print(avatar)
+        db.update_avatar(file=avatar, user_id=user_info[0])
+        return redirect(url_for('profile.profile'))
