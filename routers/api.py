@@ -12,10 +12,22 @@ api_bp = Blueprint('api_bp', __name__)
 def api_callback(method):
     # Check if the user is logged in
     if 'username' in session and session['username']:
+        # Get User Method
         if method == 'get_user':
             user_id = request.args.get('user_id', type=int)
             if user_id is not None:
                 return apiv1.get_user(user_id)
+            else:
+                return jsonify({"error": "Missing user_id"}), 400
+        # GetPosts Method
+        elif method == 'get_posts':
+            return apiv1.get_posts(user_id)
+        # GetUserPosts Method
+        elif method == 'get_user_posts':
+            user_id = request.args.get('user_id', type=int)
+            if user_id is not None:
+                return apiv1.get_user_posts(user_id)
+            
             else:
                 return jsonify({"error": "Missing user_id"}), 400
         # You can add more methods here

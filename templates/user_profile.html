@@ -1,25 +1,26 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="profile-container">
-    <h1>Профиль пользователя: {{ user.username }}</h1>
-    <h1>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user_profile.css') }}">
+<div class="profile-page">
+    <div class="avatar-section">
         {% if avatar %}
-            <img src="{{ avatar }}" alt="Post image", style="max-width: 20%; max-height: 20%;"\n>
+            <img src="{{ avatar }}" alt="Аватар пользователя" class="profile-avatar">
         {% endif %}
-        <form action="{{ url_for('friends.add_friend', user_id2=user.id) }}" method="post">
-            <button type="submit">Добавить в друзья</button>
-        </form>
-    </h1>
-    {% if is_online %}
-        <p>Онлайн</p>
-    {% elif user.last_seen %}
-        <p>Был в сети: {{ user.last_seen.strftime('%Y-%m-%d %H:%M:%S') }}</p>
-    {% else %}
-        <p>Время последней активности неизвестно</p>
-    {% endif %}
-    <!-- Отображение другой информации о пользователе -->
-    <p>Email: {{ user.email }}</p>
-    <!-- Дополнительные детали профиля -->
+        <h1 class="welcome-message">Профиль пользователя: {{ user.username }}</h1>
+        <div class="user-info">
+            {% if is_online %}
+                <p>Онлайн <span class="online-indicator"></span></p>
+            {% elif user.last_seen %}
+                <p>Был в сети: {{ user.last_seen.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            {% else %}
+                <p>Время последней активности неизвестно</p>
+            {% endif %}
+            <p>Email: {{ user.email }}</p>
+            <form action="{{ url_for('friends.add_friend', user_id2=user.id) }}" method="post" class="post-form">
+                <button type="submit" class="btn btn-success">Добавить в друзья</button>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}

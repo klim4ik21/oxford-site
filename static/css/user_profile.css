@@ -1,0 +1,62 @@
+.profile-page {
+    display: flex;
+    align-items: flex-start;
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #f0f0f0;
+    color: #333;
+    padding: 20px;
+}
+
+.avatar-section {
+    margin-right: 50px;
+}
+
+.profile-avatar {
+    max-width: 250px;
+    border: 1px solid #d0d0d0;
+    padding: 5px;
+    background-color: #ffffff;
+}
+
+.welcome-message {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.user-info p,
+.user-info form {
+    text-align: left;
+    margin-top: 5px;
+}
+
+.online-indicator {
+    width: 10px;
+    height: 10px;
+    background-color: #28a745;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.post-form {
+    margin-top: 10px;
+}
+
+.btn {
+    background-color: #d0d0d0;
+    color: #333;
+    padding: 5px 10px;
+    border: 2px outset #333;
+    cursor: pointer;
+    font-family: 'Courier New', Courier, monospace;
+    text-transform: uppercase;
+}
+
+.btn-success:hover,
+.btn-danger:hover {
+    background-color: #b0b0b0;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+}

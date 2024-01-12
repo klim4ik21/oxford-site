@@ -33,6 +33,17 @@ class SQLighter:
             ORDER BY posts.created_at DESC
         ''')
         return self.cursor.fetchall()
+    
+    def get_posts_by_id(self, user_id):
+        self.cursor.execute('''
+            SELECT posts.id, posts.text, posts.image_url, posts.created_at, users.username, posts.head_title, posts.username, posts.post_owner_id
+            FROM posts
+            JOIN users ON posts.user_id = users.id
+            WHERE posts.post_owner_id = '%s'
+            ORDER BY posts.created_at DESC
+        ''', (user_id,))
+        return self.cursor.fetchall()
+
         
     def update_last_seen(self, username):
         current_time = datetime.datetime.now()

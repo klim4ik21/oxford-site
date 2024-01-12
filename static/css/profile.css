@@ -104,3 +104,42 @@
     display: inline-block;
     margin-left: 5px;
 }
+
+/* Стили для фида новостей */
+.news-feed {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.news-item {
+    background-color: #e9e9e9;
+    border: 1px solid #c0c0c0;
+    padding: 15px;
+    margin-bottom: 10px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.news-item h3, .news-item p {
+    margin: 5px 0;
+}
+
+.news-item img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+}
+
+/* Стили для комментариев */
+.comment {
+    background-color: #f7f7f7;
+    padding: 5px 10px;
+    margin-top: 5px;
+}
+
+/* Стили для текстового поля и кнопки комментирования */
+.news-item textarea, .news-item button {
+    width: 100%;
+    padding: 5px;
+    margin-top: 5px;
+}

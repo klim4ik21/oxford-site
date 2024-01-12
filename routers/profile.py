@@ -4,6 +4,7 @@ from flask import session
 from config import db_uri
 from werkzeug.security import generate_password_hash, check_password_hash
 import utils
+from api_v1 import v1 as apiv1
 
 profile_bp = Blueprint('profile', __name__)
 
@@ -19,10 +20,11 @@ def profile():
         avatar = db.get_avatar(user_id)
         friend_requests = db.get_friend_requests(user_id)
         friend_usernames = db.get_friends(user_id)
-        # Debugging: Print the friend_requests to see the structure
-        print(friend_requests)
-
-        return render_template('profile.html', user=user_info, is_online=online_status, avatar=avatar, friend_requests=friend_requests, friends=friend_usernames)
+        # Вызываем функцию get_posts() непосредственно, без HTTP-запроса
+        posts_response = apiv1.get_posts()  # Здесь предполагается, что get_posts возвращает ответ Flask
+        # Получаем список постов из ответа
+        posts_list = posts_response.json.get('posts', []) if hasattr(posts_response, 'json') else []
+        return render_template('profile.html', user=user_info, is_online=online_status, avatar=avatar, friend_requests=friend_requests, friends=friend_usernames, posts=posts_list)
     else:
         return redirect(url_for('login_bp.login'))
     

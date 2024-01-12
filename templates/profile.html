@@ -1,4 +1,3 @@
-<!-- templates/profile.html -->
 {% extends 'base.html' %}
 
 {% block content %}
@@ -23,6 +22,32 @@
         <p>Email: {{ user.email }}</p>
     </div>
     
+    <!-- Раздел с новостными постами -->
+    <div class="news-feed">
+        {% for post in posts %}
+        <div class="news-item">
+            <h3 class="post-head_title">Title {{ post['head_title'] }}</h3>
+            <h3 class="post-username">
+                <a href="{{ url_for('profile.profile', user_id=post['post_owner_id']) }}">{{ post['username'] }}</a>
+            </h3>
+            {% if post['full_image_url'] %}
+            <img src="{{ post['full_image_url'] }}" alt="Post image" loading="lazy" style="max-width: 20%; max-height: 20%;">
+            {% endif %}
+            <p class="post-text">{{ post['text'] }}</p>
+            <span class="post-date">{{ post['created_at'] }} date</span>
+            <form method="post" action="{{ url_for('posts.create_comment', post_id=post['id']) }}">
+                <textarea name="comment_text" placeholder="Add a comment..."></textarea>
+                <button type="submit">Comment</button>
+            </form>
+            {% for comment in post['comments'] %}
+                <div class="comment">
+                    <p>{{ comment['username'] }}: {{ comment['text'] }}</p>
+                </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+
     <div class="additional-info">
         <!-- Friends Section -->
         {% if friends %}
@@ -30,8 +55,7 @@
             <h2>Друзья:</h2>
             <ul>
                 {% for friend in friends %}
-                    <li class="friend-item">{{ friend }}<button class="delete-friend-btn">X</button> <!-- Кнопка удаления -->
-                    </li>
+                    <li class="friend-item">{{ friend }}<button class="delete-friend-btn">X</button></li>
                 {% endfor %}
             </ul>
         </div>
