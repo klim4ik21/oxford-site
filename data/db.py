@@ -65,7 +65,7 @@ class SQLighter:
 
     def is_online(self, last_seen):
         if last_seen:
-            return (datetime.datetime.now() - last_seen) < datetime.timedelta(minutes=5)
+            return (datetime.datetime.now() - last_seen) < datetime.timedelta(minutes=1)
         return False
     
     def update_avatar(self, file, user_id):

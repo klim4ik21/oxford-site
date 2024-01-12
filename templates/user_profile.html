@@ -10,9 +10,23 @@
         <h1 class="welcome-message">Профиль пользователя: {{ user.username }}</h1>
         <div class="user-info">
             {% if is_online %}
-                <p>Онлайн <span class="online-indicator"></span></p>
+                <p>Онлайн<span class="online-indicator"></span></p>
             {% elif user.last_seen %}
-                <p>Был в сети: {{ user.last_seen.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                <p>
+                    {% with last_seen_time=user.last_seen %}
+                        {% with time_diff=current_time - last_seen_time %}
+                            {% if time_diff.days == 0 %}
+                                {{ "Сегодня в " }}{{ last_seen_time.strftime('%H:%M') }}
+                            {% elif time_diff.days == 1 %}
+                                {{ "Вчера в " }}{{ last_seen_time.strftime('%H:%M') }}
+                            {% elif time_diff.days == 2 %}
+                                {{ "Позавчера в " }}{{ last_seen_time.strftime('%H:%M') }}
+                            {% else %}
+                                {{ "Был " }}{{ last_seen_time.strftime('%d.%m.%y в %H:%M') }}
+                            {% endif %}
+                        {% endwith %}
+                    {% endwith %}
+                </p>
             {% else %}
                 <p>Время последней активности неизвестно</p>
             {% endif %}

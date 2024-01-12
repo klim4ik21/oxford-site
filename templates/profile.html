@@ -17,7 +17,7 @@
         {% if is_online %}
             <p>Онлайн<span class="online-indicator"></span></p>
         {% else %}
-            <p>Был в сети: {{ user.last_seen.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            <p>Был в сети: {{ user.last_seen.strftime('%Y-%m-%d %H:%M') }}</p>
         {% endif %}
         <p>Email: {{ user.email }}</p>
     </div>

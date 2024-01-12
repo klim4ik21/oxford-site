@@ -3,6 +3,7 @@ from data.db import SQLighter
 from flask import session
 from config import db_uri
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 users_bp = Blueprint('users', __name__)
 
@@ -16,6 +17,7 @@ def view_profile(user_id):
         last_seen = db.get_last_seen(user_info[1])
         online_status = db.is_online(last_seen)
         print(online_status)
-        return render_template('user_profile.html', user=user_info, is_online=online_status, avatar=avatar)
+        current_time = datetime.now()
+        return render_template('user_profile.html', user=user_info, is_online=online_status, avatar=avatar, current_time=current_time)
     else:
         return redirect(url_for('home_bp.home'))

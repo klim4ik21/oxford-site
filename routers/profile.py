@@ -12,6 +12,7 @@ profile_bp = Blueprint('profile', __name__)
 def profile():
     db = SQLighter(db_uri)
     if 'username' in session:
+        db.update_last_seen(session['username'])
         username = session['username']
         user_info = db.get_user(username)
         user_id = user_info['id']  # Ensure this matches your data structure

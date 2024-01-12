@@ -19,7 +19,7 @@
     <div class="news-item">
         <h3 class="post-head_title">Ttitle {{ post['head_title'] }}</h3>
         <h3 class="post-username">
-            <a href="{{ url_for('profile.profile', user_id=post['post_owner_id']) }}">{{ post['username'] }}</a>
+            <a href="{{ url_for('users.view_profile', user_id=post['post_owner_id']) }}">{{ post['username'] }}</a>
         </h3>
         {% if post['full_image_url'] %}
         <img class="lazy-load" data-src="{{ post['full_image_url'] }}" alt="Post image", style="max-width: 20%; max-height: 20%;">
