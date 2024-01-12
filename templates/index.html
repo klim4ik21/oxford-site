@@ -22,7 +22,7 @@
             <a href="{{ url_for('profile.profile', user_id=post['post_owner_id']) }}">{{ post['username'] }}</a>
         </h3>
         {% if post['full_image_url'] %}
-        <img src="{{ post['full_image_url'] }}" alt="Post image" loading="lazy" style="max-width: 20%; max-height: 20%;">
+        <img class="lazy-load" data-src="{{ post['full_image_url'] }}" alt="Post image", style="max-width: 20%; max-height: 20%;">
         {% endif %}
         <p class="post-text">{{ post['text'] }}</p> <!-- Текст поста -->
         <span class="post-date">{{ post['created_at'] }} date</span> <!-- Дата создания -->
@@ -40,30 +40,5 @@
     </div>
 {% endfor %}
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-function updatePosts() {
-    $.ajax({
-        url: '/get_posts',
-        type: 'GET',
-        dataType: 'json',
-        success: function(posts) {
-            var postsHtml = '';
-            posts.forEach(function(post) {
-                postsHtml += '<div class="post">' +
-                              '<h2>' + post.head_title + '</h2>' +
-                              '<p>' + post.post_text + '</p>' +
-                              '</div>';  // Предположим, что у постов есть заголовок и текст
-            });
-            $('.posts-container').html(postsHtml);
-        }
-    });
-}
-
-$(document).ready(function() {
-    updatePosts(); // Обновить посты при загрузке страницы
-    setInterval(updatePosts, 5000); // Обновлять посты каждые 5 секунд
-});
-</script>
 
 {% endblock %}
