@@ -72,3 +72,8 @@ def get_user_posts(user_id):
         posts_list.append(post_dict)
 
     return jsonify(posts=posts_list)
+
+def get_post_comments(post_id):
+    db = SQLighter(db_uri)
+    comments = db.get_comments(post_id=post_id)
+    return jsonify(comments)

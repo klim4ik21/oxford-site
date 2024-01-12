@@ -30,6 +30,12 @@ def api_callback(method):
             else:
                 return jsonify({"error": "Missing user_id"}), 400
         # You can add more methods here
+        elif method == 'get_post_comments':
+            post_id = request.args.get('post_id', type=int)
+            if post_id is not None:
+                return apiv1.get_post_comments(post_id)
+            else:
+                return jsonify({"error": "Missing post_id"}), 400
         else:
             return jsonify({"error": "API METHOD ERROR"}), 400
     else:

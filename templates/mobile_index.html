@@ -60,10 +60,31 @@
 
         function showCommentsPanel(postId) {
             var commentsContent = document.getElementById('commentsContent');
-            // Здесь будет AJAX-запрос или другой механизм получения комментариев
-            commentsContent.innerHTML = 'Загрузка комментариев...'; // Пример содержимого
+            commentsContent.innerHTML = 'Загрузка комментариев...';
+        
+            fetch(`http://127.0.0.1:5000/api/get_post_comments?post_id=${postId}`)
+                .then(response => response.json())
+                .then(comments => {
+                    if (comments.length === 0) {
+                        commentsContent.innerHTML = 'Комментариев нет.';
+                        return;
+                    }
+        
+                    commentsContent.innerHTML = comments.map(comment =>
+                        `<div class="comment">
+                            <span class="comment-username">${comment[3]}</span>
+                            <p class="comment-text">${comment[1]}</p>
+                        </div>`
+                    ).join('');
+                })
+                .catch(error => {
+                    console.error('Ошибка при загрузке комментариев:', error);
+                    commentsContent.innerHTML = 'Не удалось загрузить комментарии.';
+                });
+        
             document.getElementById('commentsPanel').style.bottom = '0';
         }
+        
     </script>
 </body>
 </html>
