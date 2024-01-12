@@ -10,6 +10,9 @@ home_bp = Blueprint('home', __name__)
 
 @home_bp.route('/')
 def home():
+    user_agent = request.headers.get('User-Agent')
+    if "Mobile" in user_agent:
+        return redirect(url_for('home.mobile_index'))
     db = SQLighter(db_uri)
     if 'username' in session:
         db.update_last_seen(session['username'])
@@ -19,11 +22,7 @@ def home():
 
     # Получаем список постов из ответа
     posts_list = posts_response.json.get('posts', []) if hasattr(posts_response, 'json') else []
-    user_agent = request.headers.get('User-Agent')
-    if "Mobile" in user_agent:
-        return redirect(url_for('home.mobile_index'))
-    else:
-        return render_template('index.html', posts=posts_list)
+    return render_template('index.html', posts=posts_list)
     
 
 @home_bp.route('/m')

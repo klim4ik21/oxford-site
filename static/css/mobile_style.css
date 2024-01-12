@@ -68,17 +68,21 @@ body {
 
 .comments-panel {
     position: fixed;
-    bottom: -100%;
+    bottom: -100%; /* Изначально скрыто вне экрана */
     left: 0;
     right: 0;
     background-color: white;
     z-index: 1000;
     height: 50%;
-    overflow-y: scroll;
     transition: bottom 0.3s;
+    display: flex;
+    flex-direction: column;
 }
 
+
 .comments-content {
+    overflow-y: auto;
+    flex-grow: 1;
     padding: 20px;
 }
 
@@ -98,8 +102,8 @@ body {
 .comment-form button {
     width: 100%;
     padding: 10px;
-    border: none;
     background-color: #d0d0d0;
+    border: none;
     cursor: pointer;
 }
 

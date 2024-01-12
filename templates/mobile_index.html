@@ -25,30 +25,31 @@
 
         <div class="posts-container">
             {% for post in posts %}
-            <div class="news-item">
-                <div class="post-header">
-                    <a href="#" class="post-username">{{ post['username'] }}</a>
-                    <span class="post-date">{{ post['created_at'] }}</span>
+                <div class="news-item">
+                    <div class="post-header">
+                        <a href="#" class="post-username">{{ post['username'] }}</a>
+                        <span class="post-date">{{ post['created_at'] }}</span>
+                    </div>
+
+                    {% if post['full_image_url'] %}
+                        <div class="post-image-container">
+                            <img src="{{ post['full_image_url'] }}" alt="Post image">
+                        </div>
+                    {% endif %}
+
+                    <div class="post-content">
+                        <h3>{{ post['head_title'] }}</h3>
+                        <p>{{ post['text'] }}</p>
+                    </div>
+
+                    <button class="comment-button" onclick="showCommentsPanel('{{ post['id'] }}')">Comments</button>
                 </div>
 
-                {% if post['full_image_url'] %}
-                <div class="post-image-container">
-                    <img src="{{ post['full_image_url'] }}" alt="Post image">
-                </div>
-                {% endif %}
+                <div class="comments-panel" id="commentsPanel{{ post['id'] }}">
+                    <div class="comments-content" id="commentsContent{{ post['id'] }}">
+                        <!-- Динамическое добавление комментариев -->
+                    </div>
 
-                <div class="post-content">
-                    <h3>{{ post['head_title'] }}</h3>
-                    <p>{{ post['text'] }}</p>
-                </div>
-
-                <button class="comment-button" onclick="showCommentsPanel('{{ post['id'] }}')">Comments</button>
-            </div>
-            <div class="comments-panel" id="commentsPanel">
-                <div class="comments-content" id="commentsContent">
-                    <!-- Динамическое добавление комментариев -->
-                </div>
-                <div class="comment-form-container">
                     <div class="comment-form-container">
                         <form method="post" action="{{ url_for('posts.create_comment', post_id=post['id']) }}" class="comment-form">
                             <textarea name="comment_text" placeholder="Add a comment..."></textarea>
@@ -56,36 +57,39 @@
                         </form>
                     </div>  
                 </div>
-            </div>
             {% endfor %}
         </div>
     </div>
 
-    
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var commentsPanel = document.getElementById('commentsPanel');
-            var mc = new Hammer(commentsPanel);
-        
-            mc.get('swipe').set({ direction: Hammer.DIRECTION_DOWN });
-        
-            mc.on('swipe', function() {
-                commentsPanel.style.bottom = '-100%'; // Закрыть панель комментариев
+            var commentsPanels = document.querySelectorAll('.comments-panel');
+            commentsPanels.forEach(panel => {
+                var mc = new Hammer(panel);
+                mc.get('swipe').set({ direction: Hammer.DIRECTION_DOWN });
+
+                mc.on('swipe', function() {
+                    panel.style.bottom = '-100%'; // Закрыть панель комментариев
+                });
             });
-        
+
             // Обработчик клика для закрытия панели
             document.addEventListener('click', function(event) {
-                if (!commentsPanel.contains(event.target) && !event.target.matches('.comment-button')) {
-                    commentsPanel.style.bottom = '-100%';
-                }
+                commentsPanels.forEach(panel => {
+                    if (!panel.contains(event.target) && !event.target.matches('.comment-button')) {
+                        panel.style.bottom = '-100%';
+                    }
+                });
             });
         });
+
         function showCommentsPanel(postId) {
-            var commentsContent = document.getElementById('commentsContent');
+            var commentsContent = document.getElementById('commentsContent' + postId);
+            var commentsPanel = document.getElementById('commentsPanel' + postId);
             commentsContent.innerHTML = 'Загрузка комментариев...';
             var currentHost = window.location.host;
             var protocol = currentHost === '127.0.0.1:5000' ? 'http://' : 'https://';
+
             fetch(`${protocol}${currentHost}/api/get_post_comments?post_id=${postId}`)
                 .then(response => response.json())
                 .then(comments => {
@@ -100,10 +104,9 @@
                     console.error('Ошибка при загрузке комментариев:', error);
                     commentsContent.innerHTML = 'Не удалось загрузить комментарии.';
                 });
-        
-            document.getElementById('commentsPanel').style.bottom = '0';
+
+            commentsPanel.style.bottom = '0';
         }
-        
     </script>
 </body>
 </html>
