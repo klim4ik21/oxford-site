@@ -21,7 +21,7 @@ def profile():
         friend_requests = db.get_friend_requests(user_id)
         friend_usernames = db.get_friends(user_id)
         # Вызываем функцию get_posts() непосредственно, без HTTP-запроса
-        posts_response = apiv1.get_posts()  # Здесь предполагается, что get_posts возвращает ответ Flask
+        posts_response = apiv1.get_user_posts(user_id)  # Здесь предполагается, что get_posts возвращает ответ Flask
         # Получаем список постов из ответа
         posts_list = posts_response.json.get('posts', []) if hasattr(posts_response, 'json') else []
         return render_template('profile.html', user=user_info, is_online=online_status, avatar=avatar, friend_requests=friend_requests, friends=friend_usernames, posts=posts_list)

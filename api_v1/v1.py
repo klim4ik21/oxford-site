@@ -52,7 +52,7 @@ def get_posts():
     
 def get_user_posts(user_id):
     db = SQLighter(db_uri)
-    posts = db.get_posts_by_id()
+    posts = db.get_posts_by_id(user_id=user_id)
     posts_list = []
 
     for post in posts:

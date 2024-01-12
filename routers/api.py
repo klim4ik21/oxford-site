@@ -21,13 +21,12 @@ def api_callback(method):
                 return jsonify({"error": "Missing user_id"}), 400
         # GetPosts Method
         elif method == 'get_posts':
-            return apiv1.get_posts(user_id)
+            return apiv1.get_posts()
         # GetUserPosts Method
         elif method == 'get_user_posts':
             user_id = request.args.get('user_id', type=int)
             if user_id is not None:
                 return apiv1.get_user_posts(user_id)
-            
             else:
                 return jsonify({"error": "Missing user_id"}), 400
         # You can add more methods here
