@@ -1,0 +1,106 @@
+/* Основные стили для профиля */
+.profile-page {
+    display: flex;
+    justify-content: start;
+    align-items: flex-start;
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #f0f0f0;
+    color: #333;
+    padding: 20px;
+}
+
+/* Стилизация секции аватара */
+.avatar-section {
+    text-align: center;
+    margin-right: 50px; /* Отступ справа от секции аватара */
+}
+
+.avatar-section img {
+    max-width: 250px; /* Увеличиваем размер аватарки */
+    border: 1px solid #d0d0d0;
+    padding: 5px;
+    background-color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.welcome-message {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Стилизация формы обновления аватара */
+.post-form {
+    background-color: #ffffff;
+    padding: 5px;
+    border: 1px solid #d0d0d0;
+    margin-bottom: 10px;
+    width: auto; /* Изменяем ширину формы */
+}
+
+.post-form input[type="file"],
+.post-form button {
+    width: 100%;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+/* Стили для раздела друзей */
+.friends-section {
+    padding: 10px;
+    width: 100%;
+}
+
+.friend-item {
+    display: flex; /* Используем flexbox для выравнивания элементов */
+    align-items: center; /* Центрируем элементы по вертикали */
+    margin-bottom: 5px; /* Отступ между элементами списка */
+}
+
+.friend-item .delete-friend-btn {
+    margin-left: 10px; /* Отступ слева от имени друга */
+    /* Остальные стили остаются прежними */
+}
+
+/* Стилизация кнопки удаления из друзей */
+.delete-friend-btn {
+    margin-left: 10px; /* Отступ слева от имени друга */
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 3px 6px;
+    cursor: pointer;
+    font-size: 0.8em;
+}
+
+.delete-friend-btn:hover {
+    background-color: #c82333;
+}
+
+/* Общие стили для кнопок */
+.btn {
+    padding: 5px 10px;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.btn-success {
+    background-color: #28a745;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+}
+
+/* Стили для индикатора онлайн-статуса */
+.online-indicator {
+    width: 10px;
+    height: 10px;
+    background-color: #28a745; /* Зеленый цвет для онлайн-статуса */
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 5px;
+}

@@ -1,59 +1,93 @@
+/* Общие стили для "ретро" эффекта */
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
+    background-color: #e0e0e0;
+    font-family: 'Courier New', Courier, monospace;
     color: #333;
+    font-size: 14px;
 }
 
-.container {
-    display: flex;
-    min-height: 100vh;
-}
-
-.sidebar {
-    width: 200px;
-    background-color: #111;
+.main-container {
     padding: 20px;
-    box-sizing: border-box;
+    margin: 0 auto;
+    width: 80%;
+    background-color: #f8f8f8;
+    border: 1px solid #d0d0d0;
+    box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.3);
 }
 
-.sidebar .nav-links {
-    list-style-type: none;
-    padding: 0;
-}
-
-.sidebar .nav-links li a {
-    color: white;
-    text-decoration: none;
-    display: block;
-    margin-bottom: 10px;
-}
-
-.main-content {
-    flex-grow: 1;
-    background-color: white;
-    padding: 20px;
-}
-
-.news-feed {
-    background-color: #ddd;
+/* Стили для формы создания поста */
+.post-form {
+    background-color: #ffffff;
     padding: 10px;
-    border-radius: 5px;
+    border: 1px solid #d0d0d0;
     margin-bottom: 20px;
 }
 
-
-/* Дополнительные стили для старого вида */
-h1 {
-    font-size: 2em;
-    color: #333;
+.post-form textarea,
+.post-form input,
+.post-form button {
+    font-family: 'Courier New', Courier, monospace;
+    margin-top: 10px;
+    padding: 5px;
+    border: 1px solid #d0d0d0;
+    background-color: #f0f0f0;
 }
 
+.post-form button {
+    cursor: pointer;
+    color: #333;
+    background-color: #d0d0d0;
+}
+
+.post-form button:hover {
+    background-color: #b0b0b0;
+}
+
+/* Стили для постов и комментариев */
+.news-item {
+    background-color: #ffffff;
+    padding: 10px;
+    border: 1px solid #d0d0d0;
+    margin-bottom: 20px;
+}
+
+.news-item img {
+    display: block;
+    margin: 10px auto;
+    max-width: 50%;
+    height: auto;
+    border: 1px solid #d0d0d0;
+}
+
+.comment {
+    background-color: #f0f0f0;
+    padding: 5px;
+    margin-top: 10px;
+    border: 1px solid #d0d0d0;
+}
+
+.post-date {
+    color: #666;
+    font-size: 0.8em;
+}
+
+/* Дополнительные настройки для улучшения старого вида */
 a {
-    color: #0066cc;
+    color: #0000ee;
+    text-decoration: underline;
 }
 
 a:hover {
-    text-decoration: underline;
+    color: #ff0000;
+}
+
+.news-feed-title {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+/* Стиль для выделения разделов и элементов */
+textarea, input[type="file"] {
+    width: 100%;
 }
