@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile_user.css') }}">
+</head>
+<body>
+    <div class="header">
+        <a href="{{ url_for('home.home') }}" class="home-link">Home</a>
+        {% if session['username'] %}
+            <a href="{{ url_for('login.logout') }}" class="logout-link">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login.login') }}" class="login-link">Login</a>
+        {% endif %}
+    </div>
+
+    <div class="profile-container">
+        <div class="avatar-section">
+            {% if avatar %}
+                <img src="{{ avatar }}" alt="Avatar image" class="avatar-image">
+            {% endif %}
+            <h1 class="username">{{ user.username }}</h1>
+            {% if is_online %}
+                <p>Онлайн<span class="online-indicator"></span></p>
+            {% elif user.last_seen %}
+                <p>
+                    {% with last_seen_time=user.last_seen %}
+                        {% with time_diff=current_time - last_seen_time %}
+                            {% if time_diff.days == 0 %}
+                                {{ "Сегодня в " }}{{ last_seen_time.strftime('%H:%M') }}
+                            {% elif time_diff.days == 1 %}
+                                {{ "Вчера в " }}{{ last_seen_time.strftime('%H:%M') }}
+                            {% elif time_diff.days == 2 %}
+                                {{ "Позавчера в " }}{{ last_seen_time.strftime('%H:%M') }}
+                            {% else %}
+                                {{ "Был " }}{{ last_seen_time.strftime('%d.%m.%y в %H:%M') }}
+                            {% endif %}
+                        {% endwith %}
+                    {% endwith %}
+            {%endif%}
+        </div>
+
+        <div class="info-section">
+            <p class="email">Email: {{ user.email }}</p>
+            <form action="{{ url_for('friends.add_friend', user_id2=user.id) }}" method="post" class="add-friend-form">
+                <button type="submit" class="add-friend-btn">Добавить в друзья</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Additional sections (friends, friend requests) can be added here if necessary -->
+</body>
+</html>
