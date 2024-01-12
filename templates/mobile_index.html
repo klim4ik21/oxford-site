@@ -81,8 +81,8 @@
         function showCommentsPanel(postId) {
             var commentsContent = document.getElementById('commentsContent');
             commentsContent.innerHTML = 'Загрузка комментариев...';
-            
-            fetch(`http://127.0.0.1:5000/api/get_post_comments?post_id=${postId}`)
+            var currentHost = window.location.host;
+            fetch(`http://${currentHost}/api/get_post_comments?post_id=${postId}`)
                 .then(response => response.json())
                 .then(comments => {
                     commentsContent.innerHTML = comments.map(comment =>
