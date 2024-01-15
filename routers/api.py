@@ -8,7 +8,7 @@ from api_v1 import v1 as apiv1
 api_bp = Blueprint('api_bp', __name__)
 
 
-@api_bp.route('/api/<string:method>')
+@api_bp.route('/api/<string:method>', methods=['POST', 'GET'])
 def api_callback(method):
     # Check if the user is logged in
     if 'username' in session and session['username'] or method != 'get_post_methods':
@@ -36,6 +36,23 @@ def api_callback(method):
                 return apiv1.get_post_comments(post_id)
             else:
                 return jsonify({"error": "Missing post_id"}), 400
+        elif method == 'get_conversations':
+            db = SQLighter(db_uri)
+            user = db.get_user(session['username'])
+            return apiv1.get_conversations(user[0])
+        elif method == 'get_messages':
+            conversation_id = request.args.get('conversation_id', type=int)
+            return apiv1.get_messages(conversation_id=conversation_id)
+        elif method == 'send_message':
+            data = request.get_json()
+            db = SQLighter(db_uri)
+            user = db.get_user(session['username'])
+            conversation_id = data['conversation_id']
+            message_text = data['text']
+            return apiv1.send_message(conversation_id=conversation_id, sender_id=user[0], message_text=message_text)
+        elif method == 'mark_message_as_read':
+            message_id = request.args.get('message_id')
+            return apiv1.mark_message_as_read(message_id=message_id)
         else:
             return jsonify({"error": "API METHOD ERROR"}), 400
     else:

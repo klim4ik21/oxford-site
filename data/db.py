@@ -158,3 +158,79 @@ class SQLighter:
             """
             cursor.execute(query, (post_id,))
             return cursor.fetchall()
+
+    def get_conversations(self, user_id):
+        # Получение списка переписок для пользователя
+        query = """
+        SELECT conversation_id, participant_one, participant_two
+        FROM conversations
+        WHERE participant_one = %s OR participant_two = %s;
+        """
+        self.cursor.execute(query, (user_id, user_id))
+        return self.cursor.fetchall()
+    
+    def is_user_part_of_conversation(self, user_id, conversation_id):
+        with self.connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT 1
+                FROM conversations
+                WHERE (participant_one = %s OR participant_two = %s)
+                AND conversation_id = %s
+            """, (user_id, user_id, conversation_id))
+            return cursor.fetchone() is not None
+
+    def get_messages(self, conversation_id):
+        # Получение сообщений в переписке
+        query = """
+        SELECT message_id, sender_id, message_text, timestamp, is_read
+        FROM messages
+        WHERE conversation_id = %s;
+        """
+        self.cursor.execute(query, (conversation_id,))
+        return self.cursor.fetchall()
+
+    def send_message(self, conversation_id, sender_id, message_text):
+        # Отправка нового сообщения
+        query = """
+        INSERT INTO messages (conversation_id, sender_id, message_text)
+        VALUES (%s, %s, %s);
+        """
+        self.cursor.execute(query, (conversation_id, sender_id, message_text))
+        self.connection.commit()
+
+    def mark_message_as_read(self, message_id):
+        # Обновление статуса сообщения как прочитанное
+        query = """
+        UPDATE messages
+        SET is_read = TRUE
+        WHERE message_id = %s;
+        """
+        self.cursor.execute(query, (message_id,))
+        self.connection.commit()
+
+    def get_conversation_id(self, user_id1, user_id2):
+        # Возвращает ID беседы между двумя пользователями
+        query = """
+        SELECT conversation_id
+        FROM conversations
+        WHERE (participant_one = %s AND participant_two = %s) OR (participant_one = %s AND participant_two = %s);
+        """
+        self.cursor.execute(query, (user_id1, user_id2, user_id2, user_id1))
+        result = self.cursor.fetchone()
+        return result[0] if result else None
+    
+    def create_conversation(self, user_id1, user_id2):
+        # Создаем новую запись в таблице `conversations`
+        query = """
+        INSERT INTO conversations (participant_one, participant_two)
+        VALUES (%s, %s) RETURNING conversation_id;
+        """
+        try:
+            self.cursor.execute(query, (user_id1, user_id2))
+            conversation_id = self.cursor.fetchone()[0]  # Получаем ID новой беседы
+            self.connection.commit()
+            return conversation_id
+        except Exception as e:
+            print(f"Ошибка при создании беседы: {e}")
+            self.connection.rollback()
+            return None

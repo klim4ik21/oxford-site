@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="main-container">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/im.css') }}">
+    <h1 class="news-feed-title">Мои переписки</h1>
+    <div id="conversation-list">
+        <!-- Здесь будут отображаться переписки -->
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var currentUserId = "{{ currentUserId }}";
+        var username = "{{ username }}"; // Получаем ID текущего пользователя из Flask
+        fetch('/api/get_conversations')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('conversation-list');
+                data.forEach(conversation => {
+                    if (conversation.length >= 3) {
+                        const [conversationId, participantOneId, participantTwoId] = conversation;
+                        // Определяем ID другого участника переписки
+                        const otherParticipantId = participantOneId == currentUserId ? participantTwoId : participantOneId;
+    
+                        const convElement = document.createElement('div');
+                        convElement.className = 'conversation';
+                        convElement.innerHTML = `<a href="/im/${otherParticipantId}">Переписка с пользователем ${otherParticipantId}</a>`;
+                        container.appendChild(convElement);
+                    }
+                });
+            })
+            .catch(error => console.error('Ошибка при запросе:', error));
+    });
+    
+</script>
+{% endblock %}

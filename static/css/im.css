@@ -1,0 +1,78 @@
+/* Основные стили "ретро" */
+body {
+    background-color: #e0e0e0;
+    font-family: 'Courier New', Courier, monospace;
+    color: #333;
+    font-size: 14px;
+}
+
+/* Контейнер для списка переписок и сообщений */
+.conversation-container, .message-container {
+    padding: 20px;
+    margin: 0 auto;
+    width: 80%;
+    background-color: #f8f8f8;
+    border: 1px solid #d0d0d0;
+    box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.3);
+    margin-bottom: 20px;
+}
+
+/* Стиль для каждой переписки в списке */
+.conversation {
+    background-color: #ffffff;
+    padding: 10px;
+    border: 1px solid #d0d0d0;
+    margin-bottom: 10px;
+}
+
+.conversation a {
+    color: #0000ee;
+    text-decoration: underline;
+}
+
+.conversation a:hover {
+    color: #ff0000;
+}
+
+/* Стили для сообщений */
+.message {
+    background-color: #f0f0f0;
+    padding: 5px;
+    margin-bottom: 5px;
+    border: 1px solid #d0d0d0;
+}
+
+/* Стиль для формы отправки сообщения */
+#send-message-form {
+    background-color: #ffffff;
+    padding: 10px;
+    border: 1px solid #d0d0d0;
+}
+
+#send-message-form textarea {
+    font-family: 'Courier New', Courier, monospace;
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #d0d0d0;
+    background-color: #f0f0f0;
+    width: 100%;
+}
+
+#send-message-form button {
+    cursor: pointer;
+    color: #333;
+    background-color: #d0d0d0;
+    border: none;
+    padding: 5px 10px;
+}
+
+#send-message-form button:hover {
+    background-color: #b0b0b0;
+}
+
+/* Заголовок для страницы переписок */
+.messages-title {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 30px;
+}

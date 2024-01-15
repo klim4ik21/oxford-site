@@ -1,0 +1,77 @@
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/im.css') }}">
+<!-- Предполагается, что вы передаете conversationId в шаблон из Flask -->
+<script type="text/javascript">
+    var ConvId = "{{ conversation_id }}";
+    var username = "{{ username }}"; // Получаем ID беседы из Flask
+</script>
+
+<div id "user-profile">
+    <h1>переписка с {{ username }}</h1>
+</div>
+
+<div id="message-list">
+    <!-- Здесь будут отображаться сообщения -->
+</div>
+
+<form id="send-message-form">
+    <textarea id="message-text" placeholder="Напишите сообщение..."></textarea>
+    <button type="submit">Отправить</button>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var container = document.getElementById('message-list');
+    
+        function loadMessages() {
+            fetch(`/api/get_messages?conversation_id=${ConvId}`)
+                .then(response => response.json())
+                .then(data => {
+                    container.innerHTML = ''; // Очищаем текущий список сообщений
+                    data.forEach(messageArray => {
+                        if (Array.isArray(messageArray) && messageArray.length >= 3) {
+                            var messageElement = document.createElement('div');
+                            messageElement.className = 'message';
+                            messageElement.innerHTML = `<p>${messageArray[2]}</p>`; // messageArray[2] содержит текст сообщения
+                            container.appendChild(messageElement);
+                        }
+                    });
+                })
+                .catch(error => console.error('Ошибка при запросе:', error));
+        }
+    
+        function sendMessage(event) {
+            event.preventDefault();
+            const messageText = document.getElementById('message-text').value;
+            if (messageText.trim() === '') {
+                console.error('Сообщение не может быть пустым');
+                return;
+            }
+    
+            fetch('/api/send_message', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ conversation_id: ConvId, text: messageText })
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('message-text').value = ''; // Очищаем поле ввода
+                    loadMessages(); // Перезагружаем сообщения
+                } else {
+                    console.error('Ошибка при отправке сообщения');
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при отправке сообщения:', error);
+            });
+        }
+    
+        document.getElementById('send-message-form').addEventListener('submit', sendMessage);
+    
+        loadMessages(); // Загружаем сообщения при загрузке страницы
+    
+        setInterval(loadMessages, 5000); // Обновляем сообщения каждые 5 секунд
+    });
+    
+</script>
+{% endblock %}

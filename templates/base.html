@@ -40,6 +40,7 @@
 
     <div style="text-align: right;">
         {% if session['username'] %}
+            <a href="{{ url_for('messages.conversations') }}">Messages</a>
             <a href="{{ url_for('profile.profile') }}">Profile</a>
             <a href="{{ url_for('login.logout') }}">Logout</a>
         {% else %}

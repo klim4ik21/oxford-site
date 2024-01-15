@@ -77,3 +77,21 @@ def get_post_comments(post_id):
     db = SQLighter(db_uri)
     comments = db.get_comments(post_id=post_id)
     return jsonify(comments)
+
+def get_conversations(user_id):
+    db = SQLighter(db_uri)
+    return jsonify(db.get_conversations(user_id))
+
+def get_messages(conversation_id):
+    db = SQLighter(db_uri)
+    return jsonify(db.get_messages(conversation_id))
+
+def send_message(conversation_id, sender_id, message_text):
+    db = SQLighter(db_uri)
+    db.send_message(conversation_id, sender_id, message_text)
+    return jsonify({"success": "Message sent"})
+
+def mark_message_as_read(message_id):
+    db = SQLighter(db_uri)
+    db.mark_message_as_read(message_id)
+    return jsonify({"success": "Message marked as read"})
