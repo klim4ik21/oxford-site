@@ -31,4 +31,4 @@ def conversation_with_user(other_user_id):
         # Если чата не существует, создаем новый
         conversation_id = db.create_conversation(current_user_id, other_user_id)
 
-    return render_template('user_im.html', conversation_id=conversation_id, username=current_user[1])
+    return render_template('user_im.html', conversation_id=conversation_id, username=current_user[1], other_user_id=other_user_id)

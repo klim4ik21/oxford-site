@@ -17,8 +17,6 @@ def api_callback(method):
             user_id = request.args.get('user_id', type=int)
             if user_id is not None:
                 return apiv1.get_user(user_id)
-            else:
-                return jsonify({"error": "Missing user_id"}), 400
         # GetPosts Method
         elif method == 'get_posts':
             return apiv1.get_posts()

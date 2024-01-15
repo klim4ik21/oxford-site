@@ -11,8 +11,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var currentUserId = "{{ currentUserId }}";
-        var username = "{{ username }}"; // Получаем ID текущего пользователя из Flask
+        var currentUserId = "{{ currentUserId }}"; // Получаем ID текущего пользователя из Flask
         fetch('/api/get_conversations')
             .then(response => response.json())
             .then(data => {
@@ -22,15 +21,23 @@
                         const [conversationId, participantOneId, participantTwoId] = conversation;
                         // Определяем ID другого участника переписки
                         const otherParticipantId = participantOneId == currentUserId ? participantTwoId : participantOneId;
-    
-                        const convElement = document.createElement('div');
-                        convElement.className = 'conversation';
-                        convElement.innerHTML = `<a href="/im/${otherParticipantId}">Переписка с пользователем ${otherParticipantId}</a>`;
-                        container.appendChild(convElement);
+                        
+                        // Выполняем запрос к API get_user для получения никнейма
+                        fetch(`/api/get_user?user_id=${otherParticipantId}`)
+                            .then(response => response.json())
+                            .then(userData => {
+                                const nickname = userData.user.username;
+                                
+                                const convElement = document.createElement('div');
+                                convElement.className = 'conversation';
+                                convElement.innerHTML = `<a href="/im/${otherParticipantId}">Переписка с пользователем ${nickname}</a>`;
+                                container.appendChild(convElement);
+                            })
+                            .catch(error => console.error('Ошибка при запросе к get_user:', error));
                     }
                 });
             })
-            .catch(error => console.error('Ошибка при запросе:', error));
+            .catch(error => console.error('Ошибка при запросе к get_conversations:', error));
     });
     
 </script>

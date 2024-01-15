@@ -3,11 +3,11 @@
 <!-- Предполагается, что вы передаете conversationId в шаблон из Flask -->
 <script type="text/javascript">
     var ConvId = "{{ conversation_id }}";
-    var username = "{{ username }}"; // Получаем ID беседы из Flask
+    var UserId2 = "{{ other_user_id }}";
 </script>
 
-<div id "user-profile">
-    <h1>переписка с {{ username }}</h1>
+<div id="user-profile">
+    <h1 id="conv-title">Переписка с ...</h1>
 </div>
 
 <div id="message-list">
@@ -22,7 +22,9 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var container = document.getElementById('message-list');
+        var convTitleElement = document.getElementById('conv-title');
     
+        // Функция для загрузки сообщений
         function loadMessages() {
             fetch(`/api/get_messages?conversation_id=${ConvId}`)
                 .then(response => response.json())
@@ -40,6 +42,7 @@
                 .catch(error => console.error('Ошибка при запросе:', error));
         }
     
+        // Функция для отправки сообщения
         function sendMessage(event) {
             event.preventDefault();
             const messageText = document.getElementById('message-text').value;
@@ -66,11 +69,24 @@
             });
         }
     
+        // Обработчик события для отправки сообщения
         document.getElementById('send-message-form').addEventListener('submit', sendMessage);
     
-        loadMessages(); // Загружаем сообщения при загрузке страницы
+        // Загружаем сообщения при загрузке страницы
+        loadMessages();
     
-        setInterval(loadMessages, 5000); // Обновляем сообщения каждые 5 секунд
+        // Обновляем сообщения каждые 5 секунд
+        setInterval(loadMessages, 5000);
+    
+        // Запрос к API для получения информации о беседе
+        fetch(`/api/get_user?user_id=${UserId2}`)
+            .then(response => response.json())
+            .then(data => {
+                // Предполагаем, что в ответе есть никнейм
+                const nickname = data.user.username;
+                convTitleElement.innerText = `Переписка с ${nickname}`;
+            })
+            .catch(error => console.error('Ошибка при запросе к get_conversation_info:', error));
     });
     
 </script>
