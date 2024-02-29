@@ -17,8 +17,7 @@ def home():
     if 'username' in session:
         db.update_last_seen(session['username'])
 
-    # Вызываем функцию get_posts() непосредственно, без HTTP-запроса
-    posts_response = apiv1.get_posts()  # Здесь предполагается, что get_posts возвращает ответ Flask
+    posts_response = apiv1.get_posts()
 
     # Получаем список постов из ответа
     posts_list = posts_response.json.get('posts', []) if hasattr(posts_response, 'json') else []
@@ -31,8 +30,8 @@ def mobile_index():
     if 'username' in session:
         db.update_last_seen(session['username'])
 
-    # Вызываем функцию get_posts() непосредственно, без HTTP-запроса
-    posts_response = apiv1.get_posts()  # Здесь предполагается, что get_posts возвращает ответ Flask
+    # Вызываем функцию get_posts()
+    posts_response = apiv1.get_posts()
 
     # Получаем список постов из ответа
     posts_list = posts_response.json.get('posts', []) if hasattr(posts_response, 'json') else []
