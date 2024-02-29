@@ -14,7 +14,7 @@ from routers.posts import posts_bp
 from routers.profile import profile_bp
 from routers.register import reg_bp
 from routers.users import users_bp
-from routers.messages import messages_bp  # Импортируйте конфигурацию
+from routers.messages import messages_bp
 
 app = Flask(__name__)
 
