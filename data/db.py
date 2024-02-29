@@ -3,7 +3,7 @@ import datetime
 from psycopg2.extras import DictCursor
 import utils
 
-db_uri = "postgresql://gen_user:q%2Fgy%3FQy%3F0%3Dfi%5C%3F@109.172.88.61:5432/default_db"
+db_uri = "POSTGRESQL DATABASE CONNECTION"
 
 class SQLighter:
     def __init__(self, db_uri):
