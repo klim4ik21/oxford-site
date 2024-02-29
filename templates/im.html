@@ -5,13 +5,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/im.css') }}">
     <h1 class="news-feed-title">Мои переписки</h1>
     <div id="conversation-list">
-        <!-- Здесь будут отображаться переписки -->
     </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var currentUserId = "{{ currentUserId }}"; // Получаем ID текущего пользователя из Flask
+        var currentUserId = "{{ currentUserId }}";
         fetch('/api/get_conversations')
             .then(response => response.json())
             .then(data => {
