@@ -8,8 +8,8 @@ s3 = boto3.client(
     's3',
     endpoint_url='https://s3.timeweb.com',
     region_name='ru-1',
-    aws_access_key_id='cb42813',
-    aws_secret_access_key='488554bbf25da342105ef70286f08971',
+    aws_access_key_id='some data',
+    aws_secret_access_key='access_key',
     config=Config(signature_version='s3v4')
 )
 
